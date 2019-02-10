@@ -5,9 +5,14 @@
 #include <QDesktopWidget>
 #include <QApplication>
 #include <QFileDialog>
+#include <QSessionManager>
+
+#include "../../lsMisc/stdQt/settings.h"
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+
+using namespace AmbiesoftQt;
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -16,6 +21,18 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     readSettings();
+
+    connect(ui->plainTextEdit->document(), &QTextDocument::contentsChanged,
+            this, &MainWindow::documentWasModified);
+
+#ifndef QT_NO_SESSIONMANAGER
+    QGuiApplication::setFallbackSessionManagementEnabled(false);
+    connect(qApp, &QGuiApplication::commitDataRequest,
+            this, &MainWindow::commitData);
+#endif
+
+    setCurrentFile(QString());
+    setUnifiedTitleAndToolBarOnMac(true);
 }
 
 MainWindow::~MainWindow()
@@ -25,9 +42,12 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_plainTextEdit_textChanged()
 {
+    // setWindowModified(ui->plainTextEdit->document()->isModified());
+}
+void MainWindow::documentWasModified()
+{
     setWindowModified(ui->plainTextEdit->document()->isModified());
 }
-
 void MainWindow::closeEvent(QCloseEvent *event)
 {
     if (maybeSave()) {
@@ -61,7 +81,7 @@ bool MainWindow::maybeSave()
 
 void MainWindow::readSettings()
 {
-    QSettings settings(QCoreApplication::organizationName(), QCoreApplication::applicationName());
+    IniSettings settings(QCoreApplication::organizationName(), QCoreApplication::applicationName());
     const QByteArray geometry = settings.value("geometry", QByteArray()).toByteArray();
     if (geometry.isEmpty()) {
         const QRect availableGeometry = QApplication::desktop()->availableGeometry(this);
@@ -74,10 +94,8 @@ void MainWindow::readSettings()
 }
 void MainWindow::writeSettings()
 {
-    QSettings settings(QCoreApplication::organizationName(), QCoreApplication::applicationName());
+    IniSettings settings(QCoreApplication::organizationName(), QCoreApplication::applicationName());
     settings.setValue("geometry", saveGeometry());
-
-    settings.sync();
 }
 
 bool MainWindow::on_action_Save_triggered()
@@ -112,6 +130,7 @@ bool MainWindow::saveFile(const QString &fileName)
     }
 
     QTextStream out(&file);
+    out.setCodec("UTF-8");
 #ifndef QT_NO_CURSOR
     QApplication::setOverrideCursor(Qt::WaitCursor);
 #endif
@@ -136,3 +155,58 @@ void MainWindow::setCurrentFile(const QString &fileName)
         shownName = "untitled.txt";
     setWindowFilePath(shownName);
 }
+
+void MainWindow::loadFile(const QString &fileName)
+{
+    QFile file(fileName);
+    if (!file.open(QFile::ReadOnly | QFile::Text)) {
+        QMessageBox::warning(this, tr("Application"),
+                             tr("Cannot read file %1:\n%2.")
+                             .arg(QDir::toNativeSeparators(fileName), file.errorString()));
+        return;
+    }
+
+    QTextStream in(&file);
+    in.setCodec("UTF-8");
+#ifndef QT_NO_CURSOR
+    QApplication::setOverrideCursor(Qt::WaitCursor);
+#endif
+    ui->plainTextEdit->setPlainText(in.readAll());
+#ifndef QT_NO_CURSOR
+    QApplication::restoreOverrideCursor();
+#endif
+
+    setCurrentFile(fileName);
+    statusBar()->showMessage(tr("File loaded"), 2000);
+}
+
+void MainWindow::on_action_New_triggered()
+{
+    if (maybeSave()) {
+        ui->plainTextEdit->clear();
+        setCurrentFile(QString());
+    }
+}
+
+void MainWindow::on_action_Open_triggered()
+{
+    if (maybeSave()) {
+        QString fileName = QFileDialog::getOpenFileName(this);
+        if (!fileName.isEmpty())
+            loadFile(fileName);
+    }
+}
+
+#ifndef QT_NO_SESSIONMANAGER
+void MainWindow::commitData(QSessionManager &manager)
+{
+    if (manager.allowsInteraction()) {
+        if (!maybeSave())
+            manager.cancel();
+    } else {
+        // Non-interactive: save without asking
+        if (ui->plainTextEdit->document()->isModified())
+            on_action_Save_triggered();
+    }
+}
+#endif

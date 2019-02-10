@@ -26,11 +26,13 @@ CONFIG += c++11
 
 SOURCES += \
         main.cpp \
-        mainwindow.cpp
+        mainwindow.cpp \
+    ../../lsMisc/stdQt/settings.cpp
 
 HEADERS += \
         mainwindow.h \
-    consts.h
+    consts.h \
+    ../../lsMisc/stdQt/settings.h
 
 FORMS += \
         mainwindow.ui

@@ -3,6 +3,10 @@
 
 #include <QMainWindow>
 
+QT_BEGIN_NAMESPACE
+class QSessionManager;
+QT_END_NAMESPACE
+
 namespace Ui {
 class MainWindow;
 }
@@ -13,7 +17,9 @@ class MainWindow : public QMainWindow
 
 public:
     explicit MainWindow(QWidget *parent = nullptr);
-    ~MainWindow();
+    ~MainWindow() override;
+
+    void loadFile(const QString &fileName);
 
 private:
     bool maybeSave();
@@ -25,12 +31,14 @@ protected:
 
 private slots:
     void on_plainTextEdit_textChanged();
-
+    void documentWasModified();
     bool on_action_Save_triggered();
-
-
-
     bool on_actionSave_As_triggered();
+    void on_action_New_triggered();
+    void on_action_Open_triggered();
+#ifndef QT_NO_SESSIONMANAGER
+    void commitData(QSessionManager &);
+#endif
 
 private:
     bool saveFile(const QString &fileName);
