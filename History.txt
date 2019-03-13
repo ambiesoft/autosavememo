@@ -1,3 +1,6 @@
+2019/03/13 ver1.0.3
+rebuild with different Qt because previous version is not run
+
 2019/03/13 ver1.0.2
 Word wrap
 
