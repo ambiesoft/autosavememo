@@ -23,7 +23,7 @@ bool MainWindow::event(QEvent *e)
     {
         if(ui->plainTextEdit->document()->isModified())
         {
-            if(!curFile.isEmpty())
+            if(!curFile_.isEmpty())
             {
                 on_action_Save_triggered();
             }
@@ -59,10 +59,10 @@ void MainWindow::closeEvent(QCloseEvent *event)
 
 bool MainWindow::on_action_Save_triggered()
 {
-    if (curFile.isEmpty()) {
+    if (curFile_.isEmpty()) {
         return on_action_SaveAs_triggered();
     } else {
-        return saveFile(curFile);
+        return saveFile(curFile_);
     }
 }
 

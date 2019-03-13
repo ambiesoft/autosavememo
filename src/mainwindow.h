@@ -52,12 +52,13 @@ private slots:
 
 private:
     bool saveFile(const QString &fileName);
-    void setCurrentFile(const QString &fileName);
+    void setCurrentFile(const QString &fileName, QTextCodec* codec=nullptr);
     void updateTitle();
 
     Ui::MainWindow *ui;
 
-    QString curFile;
+    QString curFile_;
+    QTextCodec* curCodec_=nullptr;
 };
 
 #endif // MAINWINDOW_H

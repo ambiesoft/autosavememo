@@ -7,6 +7,8 @@
 //#include <QFileDialog>
 //#include <QSessionManager>
 //#include <QStandardPaths>
+#include <QDebug>
+#include <QTextCodec>
 
 #include "../../lsMisc/stdQt/settings.h"
 #include "../../lsMisc/stdQt/stdQt.h"
@@ -48,7 +50,9 @@ void MainWindow::loadFile(const QString &fileName)
     }
 
     QTextStream in(&file);
-    in.setCodec("UTF-8");
+    // in.setCodec("UTF-8");
+    in.setAutoDetectUnicode(true);
+
 #ifndef QT_NO_CURSOR
     QApplication::setOverrideCursor(Qt::WaitCursor);
 #endif
@@ -59,14 +63,15 @@ void MainWindow::loadFile(const QString &fileName)
     QApplication::restoreOverrideCursor();
 #endif
 
-    setCurrentFile(fileName);
+    qDebug() << "codec = " << in.codec()->name();
+    setCurrentFile(fileName, in.codec());
     statusBar()->showMessage(tr("File loaded"), 2000);
 }
 
 bool MainWindow::saveFile(const QString &strFileName)
 {
     QString strNewTmpFile = (strFileName+".saving");
-    QString strBackupFile = (strFileName+".bkmemo");
+    QString strBackupFile;//= (strFileName+".bkmemo");
 
     {
         QFile fileNewTmp(strNewTmpFile);
@@ -81,14 +86,23 @@ bool MainWindow::saveFile(const QString &strFileName)
         // saving to tmpnew
         {
             QTextStream out(&fileNewTmp);
-            out.setCodec("UTF-8");
-        #ifndef QT_NO_CURSOR
+            out.setGenerateByteOrderMark(true);
+            if(curCodec_)
+                out.setCodec(curCodec_);
+            else
+                out.setCodec("UTF-8");
+
+
+#ifndef QT_NO_CURSOR
             QApplication::setOverrideCursor(Qt::WaitCursor);
-        #endif
+#endif
+
             out << ui->plainTextEdit->toPlainText();
-        #ifndef QT_NO_CURSOR
+
+
+#ifndef QT_NO_CURSOR
             QApplication::restoreOverrideCursor();
-        #endif
+#endif
         }
     } // file closed
 
@@ -106,7 +120,7 @@ bool MainWindow::saveFile(const QString &strFileName)
                              );
     }
 
-    setCurrentFile(strFileName);
+    setCurrentFile(strFileName,curCodec_);
     statusBar()->showMessage(tr("File saved"), 2000);
     return true;
 }
@@ -120,14 +134,16 @@ void MainWindow::updateTitle()
     title += qAppName();
     setWindowTitle(title);
 }
-void MainWindow::setCurrentFile(const QString &fileName)
+void MainWindow::setCurrentFile(const QString &fileName,QTextCodec* codec)
 {
-    curFile = fileName;
+    curFile_ = fileName;
+    curCodec_=codec;
+
     ui->plainTextEdit->document()->setModified(false);
     setWindowModified(false);
 
-    QString shownName = curFile;
-    if (curFile.isEmpty())
+    QString shownName = curFile_;
+    if (curFile_.isEmpty())
         shownName = "untitled.txt";
     setWindowFilePath(shownName);
 
