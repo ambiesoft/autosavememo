@@ -29,18 +29,24 @@ SOURCES += \
         mainwindow.cpp \
     ../../lsMisc/stdQt/settings.cpp \
     ../../lsMisc/stdQt/stdQt.cpp \
-    ../../lsMisc/stdQt/stdQt_win32.cpp
+    ../../lsMisc/stdQt/stdQt_win32.cpp \
+    mainwindow_serialize.cpp \
+    mainwindow_my.cpp \
+    mainwindow_cdtor.cpp
 
 HEADERS += \
         mainwindow.h \
     consts.h \
     ../../lsMisc/stdQt/settings.h \
-    ../../lsMisc/stdQt/stdQt.h
+    ../../lsMisc/stdQt/stdQt.h \
+    stable.h
 
 FORMS += \
         mainwindow.ui
 
 RC_FILE = app.rc
+
+PRECOMPILED_HEADER = stable.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -48,4 +54,5 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 DISTFILES += \
-    app.rc
+    app.rc \
+    ../History.txt

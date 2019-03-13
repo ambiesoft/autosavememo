@@ -38,12 +38,17 @@ private slots:
     void on_plainTextEdit_textChanged();
     void documentWasModified();
     bool on_action_Save_triggered();
-    bool on_actionSave_As_triggered();
     void on_action_New_triggered();
     void on_action_Open_triggered();
 #ifndef QT_NO_SESSIONMANAGER
     void commitData(QSessionManager &);
 #endif
+
+    void on_action_Wrap_toggled(bool arg1);
+
+    bool on_action_SaveAs_triggered();
+
+    void on_action_About_triggered();
 
 private:
     bool saveFile(const QString &fileName);

@@ -1,4 +1,4 @@
-set PYTHONEXE=C:\local\python3.5\python.exe
+set PYTHONEXE=C:\local\python3\python.exe
 set QTROOT=C:\local\Qt
 set QTVERSION=5.11.1
 set QTVERSIONTOOLS=mingw53_32
@@ -16,9 +16,9 @@ set MAKE=mingw32-make.exe
 
 set SOURCEDIR=src
 set PRONAME=SceneExplorer
-set DISTDIR=C:\Linkout\SceneExplorer
+set DISTDIR=C:\Linkout\autosavememo
 
 
-set FFMPEGSOURCEDIR=C:\LegacyPrograms\ffmpeg
+
 set FFCEXE=C:\LegacyPrograms\FFC\FFC.exe
-set DISTDIR=C:\Linkout\SceneExplorer
+set DISTDIR=C:\Linkout\autosavememo
