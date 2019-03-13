@@ -27,17 +27,25 @@ CONFIG += c++11
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-    ../../lsMisc/stdQt/settings.cpp
+    ../../lsMisc/stdQt/settings.cpp \
+    ../../lsMisc/stdQt/stdQt.cpp \
+    ../../lsMisc/stdQt/stdQt_win32.cpp
 
 HEADERS += \
         mainwindow.h \
     consts.h \
-    ../../lsMisc/stdQt/settings.h
+    ../../lsMisc/stdQt/settings.h \
+    ../../lsMisc/stdQt/stdQt.h
 
 FORMS += \
         mainwindow.ui
+
+RC_FILE = app.rc
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+DISTFILES += \
+    app.rc

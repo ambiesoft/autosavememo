@@ -6,8 +6,10 @@
 #include <QApplication>
 #include <QFileDialog>
 #include <QSessionManager>
+#include <QStandardPaths>
 
 #include "../../lsMisc/stdQt/settings.h"
+#include "../../lsMisc/stdQt/stdQt.h"
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
@@ -25,6 +27,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->plainTextEdit->document(), &QTextDocument::contentsChanged,
             this, &MainWindow::documentWasModified);
 
+
 #ifndef QT_NO_SESSIONMANAGER
     QGuiApplication::setFallbackSessionManagementEnabled(false);
     connect(qApp, &QGuiApplication::commitDataRequest,
@@ -33,6 +36,20 @@ MainWindow::MainWindow(QWidget *parent) :
 
     setCurrentFile(QString());
     setUnifiedTitleAndToolBarOnMac(true);
+}
+bool MainWindow::event(QEvent *e)
+{
+    if (e->type() == QEvent::WindowDeactivate)
+    {
+        if(ui->plainTextEdit->document()->isModified())
+        {
+            if(!curFile.isEmpty())
+            {
+                on_action_Save_triggered();
+            }
+        }
+    }
+    return ParentClass::event(e);
 }
 
 MainWindow::~MainWindow()
@@ -46,6 +63,7 @@ void MainWindow::on_plainTextEdit_textChanged()
 }
 void MainWindow::documentWasModified()
 {
+    updateTitle();
     setWindowModified(ui->plainTextEdit->document()->isModified());
 }
 void MainWindow::closeEvent(QCloseEvent *event)
@@ -91,11 +109,17 @@ void MainWindow::readSettings()
     } else {
         restoreGeometry(geometry);
     }
+
+    fileDirectory_ = settings.valueString("fileDirectory");
+    if(fileDirectory_.isEmpty())
+        fileDirectory_ = QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
 }
 void MainWindow::writeSettings()
 {
     IniSettings settings(QCoreApplication::organizationName(), QCoreApplication::applicationName());
     settings.setValue("geometry", saveGeometry());
+
+    settings.setValue("fileDirectory", fileDirectory_);
 }
 
 bool MainWindow::on_action_Save_triggered()
@@ -111,39 +135,73 @@ bool MainWindow::on_action_Save_triggered()
 bool MainWindow::on_actionSave_As_triggered()
 {
     QFileDialog dialog(this);
+    dialog.setDirectory(fileDirectory_);
     dialog.setWindowModality(Qt::WindowModal);
     dialog.setAcceptMode(QFileDialog::AcceptSave);
     if (dialog.exec() != QDialog::Accepted)
         return false;
-    return saveFile(dialog.selectedFiles().first());
+    QString file = dialog.selectedFiles().first();
+    fileDirectory_ = QFileInfo(file).path();
+    return saveFile(file);
 }
 
-bool MainWindow::saveFile(const QString &fileName)
+bool MainWindow::saveFile(const QString &strFileName)
 {
-    QFile file(fileName);
-    if (!file.open(QFile::WriteOnly | QFile::Text)) {
+    QString strNewTmpFile = (strFileName+".saving");
+    QString strBackupFile = (strFileName+".bkmemo");
+
+    {
+        QFile fileNewTmp(strNewTmpFile);
+        if (!fileNewTmp.open(QFile::WriteOnly | QFile::Text)) {
+            QMessageBox::warning(this, tr("Application"),
+                                 tr("Cannot write file %1:\n%2.")
+                                 .arg(QDir::toNativeSeparators(strNewTmpFile),
+                                      fileNewTmp.errorString()));
+            return false;
+        }
+
+        // saving to tmpnew
+        {
+            QTextStream out(&fileNewTmp);
+            out.setCodec("UTF-8");
+        #ifndef QT_NO_CURSOR
+            QApplication::setOverrideCursor(Qt::WaitCursor);
+        #endif
+            out << ui->plainTextEdit->toPlainText();
+        #ifndef QT_NO_CURSOR
+            QApplication::restoreOverrideCursor();
+        #endif
+        }
+    } // file closed
+
+    QString replaceError;
+    if(!Move3Files(strFileName, strNewTmpFile, strBackupFile,&replaceError))
+    {
         QMessageBox::warning(this, tr("Application"),
-                             tr("Cannot write file %1:\n%2.")
-                             .arg(QDir::toNativeSeparators(fileName),
-                                  file.errorString()));
-        return false;
+                             tr("Cannot replace file %1 %2 %3:%4.")
+                             .arg(
+                                 QDir::toNativeSeparators(strFileName),
+                                 QDir::toNativeSeparators(strNewTmpFile),
+                                 QDir::toNativeSeparators(strBackupFile),
+                                 replaceError
+                                 )
+                             );
     }
 
-    QTextStream out(&file);
-    out.setCodec("UTF-8");
-#ifndef QT_NO_CURSOR
-    QApplication::setOverrideCursor(Qt::WaitCursor);
-#endif
-    out << ui->plainTextEdit->toPlainText();
-#ifndef QT_NO_CURSOR
-    QApplication::restoreOverrideCursor();
-#endif
-
-    setCurrentFile(fileName);
+    setCurrentFile(strFileName);
     statusBar()->showMessage(tr("File saved"), 2000);
     return true;
 }
 
+void MainWindow::updateTitle()
+{
+    QString title=windowFilePath();
+    if(ui->plainTextEdit->document()->isModified())
+        title+="[*]";
+    title += " - ";
+    title += qAppName();
+    setWindowTitle(title);
+}
 void MainWindow::setCurrentFile(const QString &fileName)
 {
     curFile = fileName;
@@ -154,6 +212,8 @@ void MainWindow::setCurrentFile(const QString &fileName)
     if (curFile.isEmpty())
         shownName = "untitled.txt";
     setWindowFilePath(shownName);
+
+    updateTitle();
 }
 
 void MainWindow::loadFile(const QString &fileName)
@@ -191,9 +251,14 @@ void MainWindow::on_action_New_triggered()
 void MainWindow::on_action_Open_triggered()
 {
     if (maybeSave()) {
-        QString fileName = QFileDialog::getOpenFileName(this);
-        if (!fileName.isEmpty())
-            loadFile(fileName);
+        QString fileName = QFileDialog::getOpenFileName(this,
+                                                        qAppName(),
+                                                        fileDirectory_);
+        if (fileName.isEmpty())
+            return;
+
+        fileDirectory_ = QFileInfo(fileName).path();
+        loadFile(fileName);
     }
 }
 

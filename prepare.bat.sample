@@ -1,0 +1,24 @@
+set PYTHONEXE=C:\local\python3.5\python.exe
+set QTROOT=C:\local\Qt
+set QTVERSION=5.11.1
+set QTVERSIONTOOLS=mingw53_32
+
+:: For Visual Studio 2017 x64
+::call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat"
+::set MAKE=nmake
+
+:: For MingW
+:: set PATH=<path to mingw bin>
+:: set MAKE=nmake
+set PATH=%QTROOT%\Tools\mingw530_32\bin;%PATH%
+set MAKE=mingw32-make.exe
+
+
+set SOURCEDIR=src
+set PRONAME=SceneExplorer
+set DISTDIR=C:\Linkout\SceneExplorer
+
+
+set FFMPEGSOURCEDIR=C:\LegacyPrograms\ffmpeg
+set FFCEXE=C:\LegacyPrograms\FFC\FFC.exe
+set DISTDIR=C:\Linkout\SceneExplorer

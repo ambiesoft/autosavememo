@@ -1,3 +1,15 @@
 build-*/
 *.user
+.*~
+.vs/
 
+prepare.bat
+
+.qmake.stash
+autosavememo.vcxproj
+autosavememo.vcxproj.filters
+build/
+debug/
+release/
+autosavememo.sln
+ui_mainwindow.h

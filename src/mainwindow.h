@@ -15,6 +15,10 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
+    using ParentClass = QMainWindow;
+
+    QString fileDirectory_;
+
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow() override;
@@ -28,6 +32,7 @@ private:
 
 protected:
     void closeEvent(QCloseEvent *event) override;
+    bool event(QEvent *event) override;
 
 private slots:
     void on_plainTextEdit_textChanged();
@@ -43,6 +48,7 @@ private slots:
 private:
     bool saveFile(const QString &fileName);
     void setCurrentFile(const QString &fileName);
+    void updateTitle();
 
     Ui::MainWindow *ui;
 
