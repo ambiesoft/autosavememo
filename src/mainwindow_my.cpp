@@ -42,26 +42,26 @@ bool MainWindow::maybeSave()
 void MainWindow::loadFile(const QString &fileName)
 {
     QFile file(fileName);
-    if (!file.open(QFile::ReadOnly | QFile::Text)) {
-        QMessageBox::warning(this, tr("Application"),
+    if (!file.open(QFile::ReadOnly | QFile::Text))
+    {
+        QMessageBox::warning(this,
+                             qAppName(),
                              tr("Cannot read file %1:\n%2.")
                              .arg(QDir::toNativeSeparators(fileName), file.errorString()));
         return;
     }
 
+    bool hasByteOrderMark = QTextCodec::codecForUtfText(file.peek(4), nullptr) != nullptr;
     QTextStream in(&file);
-    // in.setCodec("UTF-8");
-    in.setAutoDetectUnicode(true);
+    if(hasByteOrderMark)
+        in.setAutoDetectUnicode(true);
+    else
+        in.setCodec("UTF-8");
 
-#ifndef QT_NO_CURSOR
-    QApplication::setOverrideCursor(Qt::WaitCursor);
-#endif
-
-    ui->plainTextEdit->setPlainText(in.readAll());
-
-#ifndef QT_NO_CURSOR
-    QApplication::restoreOverrideCursor();
-#endif
+    {
+        CWaitCursor wc;
+        ui->plainTextEdit->setPlainText(in.readAll());
+    }
 
     qDebug() << "codec = " << in.codec()->name();
     setCurrentFile(fileName, in.codec());
@@ -93,16 +93,11 @@ bool MainWindow::saveFile(const QString &strFileName)
                 out.setCodec("UTF-8");
 
 
-#ifndef QT_NO_CURSOR
-            QApplication::setOverrideCursor(Qt::WaitCursor);
-#endif
+            {
+                CWaitCursor wc;
+                out << ui->plainTextEdit->toPlainText();
+            }
 
-            out << ui->plainTextEdit->toPlainText();
-
-
-#ifndef QT_NO_CURSOR
-            QApplication::restoreOverrideCursor();
-#endif
         }
     } // file closed
 
