@@ -7,6 +7,8 @@
 #include <QFileDialog>
 #include <QSessionManager>
 //#include <QStandardPaths>
+#include <QTimer>
+#include <QDebug>
 
 #include "../../lsMisc/stdQt/settings.h"
 #include "../../lsMisc/stdQt/stdQt.h"
@@ -16,10 +18,12 @@
 
 using namespace AmbiesoftQt;
 
-// save when deactivated
-bool MainWindow::event(QEvent *e)
+void MainWindow::onDeactivated()
 {
-    if (e->type() == QEvent::WindowDeactivate)
+    QWidget* focus = QApplication::focusWidget();
+    qDebug() << "focus widget" << focus;
+
+    if(focus == nullptr) // || !focus->isAncestorOf(this))
     {
         if(ui->plainTextEdit->document()->isModified())
         {
@@ -29,15 +33,23 @@ bool MainWindow::event(QEvent *e)
             }
         }
     }
-    return ParentClass::event(e);
 }
 
-
-
-void MainWindow::on_plainTextEdit_textChanged()
+// save when deactivated
+bool MainWindow::event(QEvent *e)
 {
-    // setWindowModified(ui->plainTextEdit->document()->isModified());
+    if (e->type() == QEvent::WindowDeactivate)
+    {
+        // save document after 500ms
+        QTimer::singleShot(500, this, &MainWindow::onDeactivated);
+    }
+
+    return ParentClass::event(e);;
 }
+
+
+
+
 void MainWindow::documentWasModified()
 {
     updateTitle();

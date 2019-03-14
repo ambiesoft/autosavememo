@@ -7,6 +7,7 @@
 //#include <QFileDialog>
 //#include <QSessionManager>
 //#include <QStandardPaths>
+#include <QStyle>
 
 //#include "../../lsMisc/stdQt/settings.h"
 //#include "../../lsMisc/stdQt/stdQt.h"
@@ -21,6 +22,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    ui->action_Open->setIcon(this->style()->standardIcon(QStyle::SP_DialogOpenButton));
+
     connect(ui->plainTextEdit->document(), &QTextDocument::contentsChanged,
             this, &MainWindow::documentWasModified);
 

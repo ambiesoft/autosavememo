@@ -24,6 +24,7 @@ public:
     ~MainWindow() override;
 
     void loadFile(const QString &fileName);
+    void onDeactivated();
 
 private:
     bool maybeSave();
@@ -35,7 +36,6 @@ protected:
     bool event(QEvent *event) override;
 
 private slots:
-    void on_plainTextEdit_textChanged();
     void documentWasModified();
     bool on_action_Save_triggered();
     void on_action_New_triggered();
