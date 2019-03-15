@@ -18,12 +18,18 @@
 
 using namespace AmbiesoftQt;
 
-void MainWindow::onDeactivated()
+bool hasModalWindow()
 {
     QWidget* focus = QApplication::focusWidget();
     qDebug() << "focus widget" << focus;
+    qDebug() << "activeModalWidget" << QApplication::activeModalWidget();
 
-    if(focus == nullptr) // || !focus->isAncestorOf(this))
+    return // (focus == nullptr) && // || !focus->isAncestorOf(this))
+        QApplication::activeModalWidget() != nullptr;
+}
+void MainWindow::onDeactivated()
+{
+    if(!hasModalWindow())
     {
         if(ui->plainTextEdit->document()->isModified())
         {
