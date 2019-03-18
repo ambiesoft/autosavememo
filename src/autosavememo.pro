@@ -26,13 +26,15 @@ CONFIG += c++11
 
 INCLUDEPATH += ../compact_enc_det \
 
+!exists( ../compact_enc_det/compact_enc_det/compact_enc_det.cc ) {
+    error( "Submodule not found: run 'git submodule update -i'" )
+}
 
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
     ../../lsMisc/stdQt/settings.cpp \
     ../../lsMisc/stdQt/stdQt.cpp \
-    ../../lsMisc/stdQt/stdQt_win32.cpp \
     mainwindow_serialize.cpp \
     mainwindow_my.cpp \
     mainwindow_cdtor.cpp \
@@ -40,7 +42,7 @@ SOURCES += \
     ../compact_enc_det/util/encodings/encodings.cc \
     ../compact_enc_det/compact_enc_det/compact_enc_det.cc \
     ../compact_enc_det/compact_enc_det/compact_enc_det_hint_code.cc \
-    helper.cpp
+    helper.cpp \
 
 HEADERS += \
         mainwindow.h \
@@ -61,11 +63,14 @@ PRECOMPILED_HEADER = stable.h
 # ..\compact_enc_det/compact_enc_det/compact_enc_det_generated_tables.h:1854:1: error: narrowing conversion of '139' from 'int' to 'char' inside { } [-Wnarrowing]
 win32-g++ {
     QMAKE_CXXFLAGS += -Wno-narrowing
+    SOURCES += ../../lsMisc/stdQt/stdQt_win32.cpp \
 }
 win32-msvc*{
+    SOURCES += ../../lsMisc/stdQt/stdQt_win32.cpp \
 }
 linux-g++ {
     QMAKE_CXXFLAGS += -Wno-narrowing
+    SOURCES += ../../lsMisc/stdQt/stdQt_linux.cpp \
 }
 
 # Default rules for deployment.
