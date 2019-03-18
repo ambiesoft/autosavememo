@@ -20,6 +20,14 @@
 
 using namespace AmbiesoftQt;
 
+namespace {
+QIODevice::OpenModeFlag bbb()
+{
+    // if 0 returns, text is saved LF
+    // if TEXT return text is saved CRLF
+    return QFile::Text;
+}
+}
 bool MainWindow::maybeSave()
 {
     if (!ui->plainTextEdit->document()->isModified())
@@ -59,12 +67,11 @@ bool MainWindow::getByteArrayFromFile(QFile& file,
 void MainWindow::loadFile(const QString &fileName)
 {
     QFile file(fileName);
-    if (!file.open(QFile::ReadOnly)) // | QFile::Text))
+    if (!file.open(QFile::ReadOnly| bbb() ))
     {
-        QMessageBox::warning(this,
-                             qAppName(),
-                             tr("Cannot read file %1:\n%2.")
-                             .arg(QDir::toNativeSeparators(fileName), file.errorString()));
+        Alert(this,
+              tr("Cannot read file %1:\n%2.")
+              .arg(QDir::toNativeSeparators(fileName), file.errorString()));
         return;
     }
 
@@ -79,8 +86,12 @@ void MainWindow::loadFile(const QString &fileName)
     else
     {
         QTextCodec* codec = nullptr;
-        aaa(allBytes, codec);
-        in.setCodec("UTF-8");
+		if (!aaa(allBytes, codec) || !codec)
+		{
+            Alert(this,tr("Could not detect codec."));
+            return;
+		}
+		in.setCodec(codec);
     }
 
     {
@@ -93,30 +104,39 @@ void MainWindow::loadFile(const QString &fileName)
     statusBar()->showMessage(tr("File loaded"), 2000);
 }
 
-bool MainWindow::saveFile(const QString &strFileName)
+bool MainWindow::saveFile(const QString &strFileName,
+                          QTextCodec* codec)
 {
+    if(!codec)
+        codec = curCodec_;
+
+    if(!codec)
+    {
+        Alert(this,tr("Codec not set."));
+        return false;
+    }
+
     QString strNewTmpFile = (strFileName+".saving");
     QString strBackupFile;//= (strFileName+".bkmemo");
 
+
     {
         QFile fileNewTmp(strNewTmpFile);
-        if (!fileNewTmp.open(QFile::WriteOnly | QFile::Text)) {
-            QMessageBox::warning(this, tr("Application"),
-                                 tr("Cannot write file %1:\n%2.")
-                                 .arg(QDir::toNativeSeparators(strNewTmpFile),
-                                      fileNewTmp.errorString()));
+        if (!fileNewTmp.open(QFile::WriteOnly | bbb() ))
+        {
+            Alert(this,
+                  tr("Cannot write file %1:\n%2.")
+                  .arg(QDir::toNativeSeparators(strNewTmpFile), fileNewTmp.errorString()));
             return false;
         }
+
+
 
         // saving to tmpnew
         {
             QTextStream out(&fileNewTmp);
             out.setGenerateByteOrderMark(curHasBOM_);
-            if(curCodec_)
-                out.setCodec(curCodec_);
-            else
-                out.setCodec("UTF-8");
-
+            out.setCodec(codec);
 
             {
                 CWaitCursor wc;
@@ -129,8 +149,8 @@ bool MainWindow::saveFile(const QString &strFileName)
     QString replaceError;
     if(!Move3Files(strFileName, strNewTmpFile, strBackupFile,&replaceError))
     {
-        QMessageBox::warning(this, tr("Application"),
-                             tr("Cannot replace file %1 %2 %3:%4.")
+        Alert(this,
+              tr("Cannot replace file %1 %2 %3:%4.")
                              .arg(
                                  QDir::toNativeSeparators(strFileName),
                                  QDir::toNativeSeparators(strNewTmpFile),
@@ -142,18 +162,17 @@ bool MainWindow::saveFile(const QString &strFileName)
 
     // open to get bytearray
     QFile file(strFileName);
-    if (!file.open(QFile::ReadOnly)) // | QFile::Text))
+    if (!file.open(QFile::ReadOnly | bbb() ))
     {
-        QMessageBox::warning(this,
-                             qAppName(),
-                             tr("Cannot read file %1:\n%2.")
-                             .arg(QDir::toNativeSeparators(strFileName), file.errorString()));
+        Alert(this,
+              tr("Cannot read file %1:\n%2.")
+              .arg(QDir::toNativeSeparators(strFileName), file.errorString()));
         return true;
     }
     QByteArray qba;
     getByteArrayFromFile(file, qba, -1);
 
-    setCurrentFile(strFileName,qba, curCodec_);
+    setCurrentFile(strFileName,qba, codec, curHasBOM_);
     statusBar()->showMessage(tr("File saved"), 2000);
     return true;
 }
@@ -186,6 +205,16 @@ void MainWindow::setCurrentFile(const QString &fileName,
     if (curFile_.isEmpty())
         shownName = "untitled.txt";
     setWindowFilePath(shownName);
+
+    // update statusbar
+    QString statusText;
+    if(codec)
+        statusText += codec->name();
+    if(curHasBOM_)
+        statusText += " (BOM)";
+
+    statusLabelCodec_.setText(statusText);
+
 
     updateTitle();
 }

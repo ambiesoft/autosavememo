@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QLabel>
 
 QT_BEGIN_NAMESPACE
 class QSessionManager;
@@ -23,6 +24,7 @@ class MainWindow : public QMainWindow
     bool getByteArrayFromFile(QFile& file,
                                     QByteArray& qba,
                                     const qint64& maxsize);
+    QLabel statusLabelCodec_;
 
 public:
     explicit MainWindow(QWidget *parent = nullptr);
@@ -60,7 +62,8 @@ private slots:
     void on_action_BOM_toggled(bool arg1);
 
 private:
-    bool saveFile(const QString &fileName);
+    bool saveFile(const QString &fileName,
+                  QTextCodec* codec = nullptr);
     void setCurrentFile(const QString &fileName,
                         const QByteArray& allBytes,
                         QTextCodec* codec=nullptr,

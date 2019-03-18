@@ -9,6 +9,7 @@
 //#include <QStandardPaths>
 #include <QTimer>
 #include <QDebug>
+#include <QTextCodec>
 
 #include "../../lsMisc/stdQt/settings.h"
 #include "../../lsMisc/stdQt/stdQt.h"
@@ -18,18 +19,10 @@
 
 using namespace AmbiesoftQt;
 
-bool hasModalWindow()
-{
-    QWidget* focus = QApplication::focusWidget();
-    qDebug() << "focus widget" << focus;
-    qDebug() << "activeModalWidget" << QApplication::activeModalWidget();
 
-    return // (focus == nullptr) && // || !focus->isAncestorOf(this))
-        QApplication::activeModalWidget() != nullptr;
-}
 void MainWindow::onDeactivated()
 {
-    if(!hasModalWindow())
+    if(!HasModalWindow())
     {
         if(ui->plainTextEdit->document()->isModified())
         {
@@ -138,7 +131,7 @@ bool MainWindow::on_action_SaveAs_triggered()
         return false;
     QString file = dialog.selectedFiles().first();
     fileDirectory_ = QFileInfo(file).path();
-    return saveFile(file);
+    return saveFile(file, curCodec_ ? curCodec_ : GetUtf8Codec());
 }
 
 void MainWindow::on_action_About_triggered()

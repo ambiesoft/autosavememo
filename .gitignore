@@ -13,3 +13,5 @@ debug/
 release/
 autosavememo.sln
 ui_mainwindow.h
+
+src/stable.h.cpp

@@ -8,6 +8,7 @@
 //#include <QSessionManager>
 //#include <QStandardPaths>
 #include <QStyle>
+#include <QLabel>
 
 //#include "../../lsMisc/stdQt/settings.h"
 //#include "../../lsMisc/stdQt/stdQt.h"
@@ -27,6 +28,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(ui->plainTextEdit->document(), &QTextDocument::contentsChanged,
             this, &MainWindow::documentWasModified);
+
+
+    ui->statusBar->addPermanentWidget(&statusLabelCodec_);
 
 
 #ifndef QT_NO_SESSIONMANAGER

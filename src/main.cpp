@@ -43,6 +43,14 @@ void processCommandLine(QCoreApplication& app, QStringList& files)
 //    bool force = parser.isSet(forceOption);
 //    QString targetDir = parser.value(targetDirectoryOption);
 }
+
+void noMessageOutput(QtMsgType type, const QMessageLogContext &context, const QString &msg)
+{
+    Q_UNUSED(type);
+    Q_UNUSED(context);
+    Q_UNUSED(msg);
+}
+
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
