@@ -11,6 +11,8 @@ namespace Ui {
 class MainWindow;
 }
 
+class QFile;
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -18,6 +20,9 @@ class MainWindow : public QMainWindow
     using ParentClass = QMainWindow;
 
     QString fileDirectory_;
+    bool getByteArrayFromFile(QFile& file,
+                                    QByteArray& qba,
+                                    const qint64& maxsize);
 
 public:
     explicit MainWindow(QWidget *parent = nullptr);
@@ -50,15 +55,24 @@ private slots:
 
     void on_action_About_triggered();
 
+
+
+    void on_action_BOM_toggled(bool arg1);
+
 private:
     bool saveFile(const QString &fileName);
-    void setCurrentFile(const QString &fileName, QTextCodec* codec=nullptr);
+    void setCurrentFile(const QString &fileName,
+                        const QByteArray& allBytes,
+                        QTextCodec* codec=nullptr,
+                        bool hasBOM=false);
     void updateTitle();
 
     Ui::MainWindow *ui;
 
     QString curFile_;
+    QByteArray curAllBytes_;
     QTextCodec* curCodec_=nullptr;
+    bool curHasBOM_=false;
 };
 
 #endif // MAINWINDOW_H

@@ -13,6 +13,8 @@
 #include "../../lsMisc/stdQt/settings.h"
 #include "../../lsMisc/stdQt/stdQt.h"
 
+#include "helper.h"
+
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
@@ -38,11 +40,26 @@ bool MainWindow::maybeSave()
     return true;
 }
 
+bool MainWindow::getByteArrayFromFile(QFile& file,
+                                      QByteArray& qba,
+                                      const qint64& maxsize)
+{
+    qint64 fileSize = file.size();
+    if(maxsize != -1 && fileSize > maxsize)
+    {
+        QMessageBox::warning(this,
+                             qAppName(),
+                             tr("File size is too large."));
+        return false;
+    }
 
+    qba = file.peek(fileSize);
+    return true;
+}
 void MainWindow::loadFile(const QString &fileName)
 {
     QFile file(fileName);
-    if (!file.open(QFile::ReadOnly | QFile::Text))
+    if (!file.open(QFile::ReadOnly)) // | QFile::Text))
     {
         QMessageBox::warning(this,
                              qAppName(),
@@ -51,12 +68,20 @@ void MainWindow::loadFile(const QString &fileName)
         return;
     }
 
-    bool hasByteOrderMark = QTextCodec::codecForUtfText(file.peek(4), nullptr) != nullptr;
+    QByteArray allBytes ;
+    if(!getByteArrayFromFile(file, allBytes, 10 * 1024 * 1024))
+        return;
+
+    const bool hasByteOrderMark = QTextCodec::codecForUtfText(allBytes, nullptr) != nullptr;
     QTextStream in(&file);
     if(hasByteOrderMark)
         in.setAutoDetectUnicode(true);
     else
+    {
+        QTextCodec* codec = nullptr;
+        aaa(allBytes, codec);
         in.setCodec("UTF-8");
+    }
 
     {
         CWaitCursor wc;
@@ -64,7 +89,7 @@ void MainWindow::loadFile(const QString &fileName)
     }
 
     qDebug() << "codec = " << in.codec()->name();
-    setCurrentFile(fileName, in.codec());
+    setCurrentFile(fileName, allBytes, in.codec(), hasByteOrderMark);
     statusBar()->showMessage(tr("File loaded"), 2000);
 }
 
@@ -86,7 +111,7 @@ bool MainWindow::saveFile(const QString &strFileName)
         // saving to tmpnew
         {
             QTextStream out(&fileNewTmp);
-            out.setGenerateByteOrderMark(true);
+            out.setGenerateByteOrderMark(curHasBOM_);
             if(curCodec_)
                 out.setCodec(curCodec_);
             else
@@ -115,7 +140,20 @@ bool MainWindow::saveFile(const QString &strFileName)
                              );
     }
 
-    setCurrentFile(strFileName,curCodec_);
+    // open to get bytearray
+    QFile file(strFileName);
+    if (!file.open(QFile::ReadOnly)) // | QFile::Text))
+    {
+        QMessageBox::warning(this,
+                             qAppName(),
+                             tr("Cannot read file %1:\n%2.")
+                             .arg(QDir::toNativeSeparators(strFileName), file.errorString()));
+        return true;
+    }
+    QByteArray qba;
+    getByteArrayFromFile(file, qba, -1);
+
+    setCurrentFile(strFileName,qba, curCodec_);
     statusBar()->showMessage(tr("File saved"), 2000);
     return true;
 }
@@ -129,10 +167,17 @@ void MainWindow::updateTitle()
     title += qAppName();
     setWindowTitle(title);
 }
-void MainWindow::setCurrentFile(const QString &fileName,QTextCodec* codec)
+void MainWindow::setCurrentFile(const QString &fileName,
+                                const QByteArray& allBytes,
+                                QTextCodec* codec,
+                                bool hasBOM)
 {
     curFile_ = fileName;
+    curAllBytes_ = allBytes;
     curCodec_=codec;
+    curHasBOM_ = hasBOM;
+
+    ui->action_BOM->setChecked(curHasBOM_);
 
     ui->plainTextEdit->document()->setModified(false);
     setWindowModified(false);

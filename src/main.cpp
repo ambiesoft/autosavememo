@@ -1,6 +1,8 @@
 #include "mainwindow.h"
 #include <QApplication>
 #include <QCommandLineParser>
+#include <QSharedPointer>
+#include <QVector>
 
 #include "consts.h"
 using namespace Consts;
@@ -48,14 +50,43 @@ int main(int argc, char *argv[])
     QCoreApplication::setApplicationName(APPNAME);
     QCoreApplication::setApplicationVersion(APPVER);
 
+#ifdef QT_NO_DEBUG
+    if ( !app.arguments().contains(QLatin1String("--with-debug") ))
+    {
+        qInstallMessageHandler(noMessageOutput);
+    }
+#endif
+
     QStringList filesToOpen;
     processCommandLine(app, filesToOpen);
 
-    MainWindow w;
-    if(!filesToOpen.isEmpty())
-        w.loadFile(filesToOpen[0]);
+    QVector<QSharedPointer<MainWindow>> wins;
 
-    w.show();
+    if(filesToOpen.isEmpty())
+    {
+        wins.append(QSharedPointer<MainWindow>(new MainWindow()));
+    }
+    else
+    {
+        for(auto&& file: filesToOpen)
+        {
+            QSharedPointer<MainWindow> pWin(new MainWindow);
+            pWin->loadFile(file);
+            wins.append(pWin);
+        }
+    }
+//    MainWindow w1;
+//    MainWindow w2;
 
+//    w1.loadFile(filesToOpen[0]);
+//    w2.loadFile(filesToOpen[1]);
+
+//    w1.show();
+//    w2.show();
+
+    for(auto&& win : wins)
+    {
+        win->show();
+    }
     return app.exec();
 }

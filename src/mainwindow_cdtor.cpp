@@ -38,7 +38,7 @@ MainWindow::MainWindow(QWidget *parent) :
     // Read from ini
     readSettings();
 
-    setCurrentFile(QString());
+    setCurrentFile(QString(), QByteArray(), nullptr, false);
     setUnifiedTitleAndToolBarOnMac(true);
 }
 

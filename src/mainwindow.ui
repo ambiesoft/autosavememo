@@ -45,7 +45,7 @@
      <x>0</x>
      <y>0</y>
      <width>708</width>
-     <height>22</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -62,6 +62,7 @@
      <string>&amp;Edit</string>
     </property>
     <addaction name="action_Wrap"/>
+    <addaction name="action_BOM"/>
    </widget>
    <widget class="QMenu" name="menu_Help">
     <property name="title">
@@ -87,15 +88,24 @@
    <property name="text">
     <string>&amp;New</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+N</string>
+   </property>
   </action>
   <action name="action_Open">
    <property name="text">
     <string>&amp;Open...</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+O</string>
+   </property>
   </action>
   <action name="action_Save">
    <property name="text">
     <string>&amp;Save</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
    </property>
   </action>
   <action name="action_SaveAs">
@@ -114,6 +124,14 @@
   <action name="action_About">
    <property name="text">
     <string>&amp;About...</string>
+   </property>
+  </action>
+  <action name="action_BOM">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;BOM</string>
    </property>
   </action>
  </widget>

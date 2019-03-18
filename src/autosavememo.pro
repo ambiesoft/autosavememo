@@ -24,6 +24,9 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 CONFIG += c++11
 
+INCLUDEPATH += ../compact_enc_det \
+
+
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
@@ -32,14 +35,21 @@ SOURCES += \
     ../../lsMisc/stdQt/stdQt_win32.cpp \
     mainwindow_serialize.cpp \
     mainwindow_my.cpp \
-    mainwindow_cdtor.cpp
+    mainwindow_cdtor.cpp \
+    ../compact_enc_det/util/languages/languages.cc \
+    ../compact_enc_det/util/encodings/encodings.cc \
+    ../compact_enc_det/compact_enc_det/compact_enc_det.cc \
+    ../compact_enc_det/compact_enc_det/compact_enc_det_hint_code.cc \
+    helper.cpp
 
 HEADERS += \
         mainwindow.h \
     consts.h \
     ../../lsMisc/stdQt/settings.h \
     ../../lsMisc/stdQt/stdQt.h \
-    stable.h
+    stable.h \
+    ../compact_enc_det/compact_enc_det/compact_enc_det.h \
+    helper.h
 
 FORMS += \
         mainwindow.ui
@@ -47,6 +57,16 @@ FORMS += \
 RC_FILE = app.rc
 
 PRECOMPILED_HEADER = stable.h
+
+# ..\compact_enc_det/compact_enc_det/compact_enc_det_generated_tables.h:1854:1: error: narrowing conversion of '139' from 'int' to 'char' inside { } [-Wnarrowing]
+win32-g++ {
+    QMAKE_CXXFLAGS += -Wno-narrowing
+}
+win32-msvc*{
+}
+linux-g++ {
+    QMAKE_CXXFLAGS += -Wno-narrowing
+}
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

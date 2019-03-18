@@ -91,7 +91,7 @@ void MainWindow::on_action_New_triggered()
 {
     if (maybeSave()) {
         ui->plainTextEdit->clear();
-        setCurrentFile(QString());
+        setCurrentFile(QString(), QByteArray());
     }
 }
 
@@ -146,4 +146,10 @@ void MainWindow::on_action_About_triggered()
     QMessageBox::information(this,
                              qAppName(),
                              qAppName() + " v" + QApplication::applicationVersion());
+}
+
+
+void MainWindow::on_action_BOM_toggled(bool b)
+{
+    curHasBOM_=b;
 }
