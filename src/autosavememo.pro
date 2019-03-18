@@ -44,6 +44,7 @@ SOURCES += \
     ../compact_enc_det/compact_enc_det/compact_enc_det_hint_code.cc \
     helper.cpp \
 
+
 HEADERS += \
         mainwindow.h \
     consts.h \
@@ -51,7 +52,9 @@ HEADERS += \
     ../../lsMisc/stdQt/stdQt.h \
     stable.h \
     ../compact_enc_det/compact_enc_det/compact_enc_det.h \
-    helper.h
+    helper.h \
+    stdafx.h
+
 
 FORMS += \
         mainwindow.ui
@@ -63,10 +66,16 @@ PRECOMPILED_HEADER = stable.h
 # ..\compact_enc_det/compact_enc_det/compact_enc_det_generated_tables.h:1854:1: error: narrowing conversion of '139' from 'int' to 'char' inside { } [-Wnarrowing]
 win32-g++ {
     QMAKE_CXXFLAGS += -Wno-narrowing
+    HEADERS += ../../lsMisc/GetLastErrorString.h \
+
     SOURCES += ../../lsMisc/stdQt/stdQt_win32.cpp \
+        ../../lsMisc/GetLastErrorString.cpp \
 }
 win32-msvc*{
+    HEADERS += ../../lsMisc/GetLastErrorString.h \
+
     SOURCES += ../../lsMisc/stdQt/stdQt_win32.cpp \
+        ../../lsMisc/GetLastErrorString.cpp \
 }
 linux-g++ {
     QMAKE_CXXFLAGS += -Wno-narrowing

@@ -24,12 +24,15 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    ui->action_New->setIcon(this->style()->standardIcon(QStyle::SP_FileIcon));
     ui->action_Open->setIcon(this->style()->standardIcon(QStyle::SP_DialogOpenButton));
+    ui->action_Save->setIcon(this->style()->standardIcon(QStyle::SP_DialogSaveButton));
 
     connect(ui->plainTextEdit->document(), &QTextDocument::contentsChanged,
             this, &MainWindow::documentWasModified);
 
 
+    ui->statusBar->addPermanentWidget(&statusAutomode_x);
     ui->statusBar->addPermanentWidget(&statusLabelCodec_);
 
 

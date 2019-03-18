@@ -24,8 +24,17 @@ class MainWindow : public QMainWindow
     bool getByteArrayFromFile(QFile& file,
                                     QByteArray& qba,
                                     const qint64& maxsize);
+    QLabel statusAutomode_x;
     QLabel statusLabelCodec_;
 
+    bool savedOnce_xxx = false;
+    bool savedOnce() const {
+        return savedOnce_xxx;
+    }
+    void setSavedOnce(bool b) {
+        savedOnce_xxx = b;
+        statusAutomode_x.setText(tr("Autosave:") + " " + (b ? "ON" : "OFF"));
+    }
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow() override;

@@ -22,13 +22,16 @@ using namespace AmbiesoftQt;
 
 void MainWindow::onDeactivated()
 {
-    if(!HasModalWindow())
+    if(savedOnce())
     {
-        if(ui->plainTextEdit->document()->isModified())
+        if(!HasModalWindow())
         {
-            if(!curFile_.isEmpty())
+            if(ui->plainTextEdit->document()->isModified())
             {
-                on_action_Save_triggered();
+                if(!curFile_.isEmpty())
+                {
+                    on_action_Save_triggered();
+                }
             }
         }
     }

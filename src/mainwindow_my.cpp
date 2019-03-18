@@ -2,6 +2,7 @@
 //#include <QSettings>
 #include <QTextStream>
 #include <QDir>
+#include <QFile>
 //#include <QDesktopWidget>
 //#include <QApplication>
 //#include <QFileDialog>
@@ -9,6 +10,7 @@
 //#include <QStandardPaths>
 #include <QDebug>
 #include <QTextCodec>
+#include <QIODevice>
 
 #include "../../lsMisc/stdQt/settings.h"
 #include "../../lsMisc/stdQt/stdQt.h"
@@ -21,12 +23,12 @@
 using namespace AmbiesoftQt;
 
 namespace {
-QIODevice::OpenModeFlag bbb()
-{
-    // if 0 returns, text is saved LF
-    // if TEXT return text is saved CRLF
-    return QFile::Text;
-}
+    QIODevice::OpenModeFlag bbb()
+    {
+        // if 0 returns, text is saved LF
+        // if TEXT return text is saved CRLF
+        return QFile::Text;
+    }
 }
 bool MainWindow::maybeSave()
 {
@@ -101,6 +103,7 @@ void MainWindow::loadFile(const QString &fileName)
 
     qDebug() << "codec = " << in.codec()->name();
     setCurrentFile(fileName, allBytes, in.codec(), hasByteOrderMark);
+    setSavedOnce(false);
     statusBar()->showMessage(tr("File loaded"), 2000);
 }
 
@@ -150,14 +153,15 @@ bool MainWindow::saveFile(const QString &strFileName,
     if(!Move3Files(strFileName, strNewTmpFile, strBackupFile,&replaceError))
     {
         Alert(this,
-              tr("Cannot replace file %1 %2 %3:%4.")
+              tr("Cannot replace file %1 %2:%4.")
                              .arg(
                                  QDir::toNativeSeparators(strFileName),
                                  QDir::toNativeSeparators(strNewTmpFile),
-                                 QDir::toNativeSeparators(strBackupFile),
+                                 // QDir::toNativeSeparators(strBackupFile),
                                  replaceError
                                  )
                              );
+        return false;
     }
 
     // open to get bytearray
@@ -173,6 +177,9 @@ bool MainWindow::saveFile(const QString &strFileName,
     getByteArrayFromFile(file, qba, -1);
 
     setCurrentFile(strFileName,qba, codec, curHasBOM_);
+
+    setSavedOnce(true);
+
     statusBar()->showMessage(tr("File saved"), 2000);
     return true;
 }
@@ -196,6 +203,8 @@ void MainWindow::setCurrentFile(const QString &fileName,
     curCodec_=codec;
     curHasBOM_ = hasBOM;
 
+
+
     ui->action_BOM->setChecked(curHasBOM_);
 
     ui->plainTextEdit->document()->setModified(false);
@@ -203,10 +212,16 @@ void MainWindow::setCurrentFile(const QString &fileName,
 
     QString shownName = curFile_;
     if (curFile_.isEmpty())
+    {
+        setSavedOnce(false);
         shownName = "untitled.txt";
+    }
     setWindowFilePath(shownName);
 
     // update statusbar
+
+
+
     QString statusText;
     if(codec)
         statusText += codec->name();
