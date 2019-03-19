@@ -1,4 +1,4 @@
 
 class QByteArray;
 
-bool aaa(const QByteArray& array, QTextCodec*& codec);
+bool GetDetectedCodec(const QByteArray& array, QTextCodec*& codec);

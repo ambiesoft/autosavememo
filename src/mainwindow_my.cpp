@@ -69,7 +69,7 @@ bool MainWindow::getByteArrayFromFile(QFile& file,
 void MainWindow::loadFile(const QString &fileName)
 {
     QFile file(fileName);
-    if (!file.open(QFile::ReadOnly| bbb() ))
+    if (Q_UNLIKELY(!file.open(QFile::ReadOnly| bbb())))
     {
         Alert(this,
               tr("Cannot read file %1:\n%2.")
@@ -88,7 +88,7 @@ void MainWindow::loadFile(const QString &fileName)
     else
     {
         QTextCodec* codec = nullptr;
-		if (!aaa(allBytes, codec) || !codec)
+        if (Q_UNLIKELY(!GetDetectedCodec(allBytes, codec) || !codec))
 		{
             Alert(this,tr("Could not detect codec."));
             return;
@@ -113,7 +113,7 @@ bool MainWindow::saveFile(const QString &strFileName,
     if(!codec)
         codec = curCodec_;
 
-    if(!codec)
+    if(Q_UNLIKELY(!codec))
     {
         Alert(this,tr("Codec not set."));
         return false;
@@ -125,7 +125,7 @@ bool MainWindow::saveFile(const QString &strFileName,
 
     {
         QFile fileNewTmp(strNewTmpFile);
-        if (!fileNewTmp.open(QFile::WriteOnly | bbb() ))
+        if (Q_UNLIKELY(!fileNewTmp.open(QFile::WriteOnly | bbb() )))
         {
             Alert(this,
                   tr("Cannot write file %1:\n%2.")
@@ -150,7 +150,7 @@ bool MainWindow::saveFile(const QString &strFileName,
     } // file closed
 
     QString replaceError;
-    if(!Move3Files(strFileName, strNewTmpFile, strBackupFile,&replaceError))
+    if(Q_UNLIKELY(!Move3Files(strFileName, strNewTmpFile, strBackupFile,&replaceError)))
     {
         Alert(this,
               tr("Cannot replace file %1 %2:%4.")
@@ -166,7 +166,7 @@ bool MainWindow::saveFile(const QString &strFileName,
 
     // open to get bytearray
     QFile file(strFileName);
-    if (!file.open(QFile::ReadOnly | bbb() ))
+    if (Q_UNLIKELY(!file.open(QFile::ReadOnly | bbb() )))
     {
         Alert(this,
               tr("Cannot read file %1:\n%2.")

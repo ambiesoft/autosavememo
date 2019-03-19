@@ -5,12 +5,15 @@
 #include <QVector>
 #include <QTextCodec>
 
+#include "../../lsMisc/stdQt/stdQt.h"
+
 #include "../compact_enc_det/compact_enc_det/compact_enc_det.h"
 #include "../compact_enc_det/compact_enc_det/compact_enc_det_hint_code.h"
 
 #include "consts.h"
-using namespace Consts;
 
+using namespace Consts;
+using namespace AmbiesoftQt;
 #include "helper.h"
 
 struct EncodingInfo {
@@ -243,20 +246,27 @@ const char* MyEncodingName2(Encoding enc) {
     return "~";
 }
 }
-bool aaa(const QByteArray& array, QTextCodec*& codec)
+
+bool GetDetectedCodec(const QByteArray& array, QTextCodec*& codec)
 {
+    if(Q_UNLIKELY(array.isEmpty()))
+    {
+        codec = GetUtf8Codec();
+        Q_ASSERT_X(codec, "codec", "no utf8 codec");
+        return true;
+    }
     int bytes_consumed = 0;
     bool is_reliable = false;
     Encoding enc = CompactEncDet::DetectEncoding(
                 array.data(),
                 array.size(),
-                NULL,                                // url hint
-                NULL,                               // http hint
-                NULL,                               // meta hint
+                nullptr,                                // url hint
+                nullptr,                               // http hint
+                nullptr,                               // meta hint
                 UNKNOWN_ENCODING,                   // enc hint
                 UNKNOWN_LANGUAGE,  // lang hint
                 CompactEncDet::WEB_CORPUS,
-                false,  // Include 7-bit encodings
+                true,  // Include 7-bit encodings
                 &bytes_consumed, &is_reliable);
     if(!is_reliable)
         return false;
@@ -265,7 +275,7 @@ bool aaa(const QByteArray& array, QTextCodec*& codec)
 	{
 	case Encoding::ASCII_7BIT:
 	case Encoding::UTF8:
-		codec = QTextCodec::codecForName("UTF-8");
+        codec = GetUtf8Codec();
 		return true;
 	}
     codec = QTextCodec::codecForName(MyEncodingName2(enc));
