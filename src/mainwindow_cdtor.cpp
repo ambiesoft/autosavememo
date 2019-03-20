@@ -31,6 +31,10 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->plainTextEdit->document(), &QTextDocument::contentsChanged,
             this, &MainWindow::documentWasModified);
 
+    // menu
+    connect(ui->menu_Character_Code, &QMenu::aboutToShow,
+            this, &MainWindow::onCharacterCode_AboutToShow);
+
 
     ui->statusBar->addPermanentWidget(&statusAutomode_x);
     ui->statusBar->addPermanentWidget(&statusLabelCodec_);

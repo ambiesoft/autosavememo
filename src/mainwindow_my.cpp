@@ -111,7 +111,7 @@ bool MainWindow::saveFile(const QString &strFileName,
                           QTextCodec* codec)
 {
     if(!codec)
-        codec = curCodec_;
+        codec = curCodec();
 
     if(Q_UNLIKELY(!codec))
     {
@@ -138,7 +138,7 @@ bool MainWindow::saveFile(const QString &strFileName,
         // saving to tmpnew
         {
             QTextStream out(&fileNewTmp);
-            out.setGenerateByteOrderMark(curHasBOM_);
+            out.setGenerateByteOrderMark(curHasBOM());
             out.setCodec(codec);
 
             {
@@ -176,7 +176,7 @@ bool MainWindow::saveFile(const QString &strFileName,
     QByteArray qba;
     getByteArrayFromFile(file, qba, -1);
 
-    setCurrentFile(strFileName,qba, codec, curHasBOM_);
+    setCurrentFile(strFileName,qba, codec, curHasBOM());
 
     setSavedOnce(true);
 
@@ -193,6 +193,16 @@ void MainWindow::updateTitle()
     title += qAppName();
     setWindowTitle(title);
 }
+void MainWindow::updateStatusText()
+{
+    QString statusText;
+    if(curCodec())
+        statusText += curCodec()->name();
+    if(curHasBOM())
+        statusText += " (BOM)";
+
+    statusLabelCodec_.setText(statusText);
+}
 void MainWindow::setCurrentFile(const QString &fileName,
                                 const QByteArray& allBytes,
                                 QTextCodec* codec,
@@ -200,12 +210,12 @@ void MainWindow::setCurrentFile(const QString &fileName,
 {
     curFile_ = fileName;
     curAllBytes_ = allBytes;
-    curCodec_=codec;
-    curHasBOM_ = hasBOM;
+    setCurCodec(codec);
+    setCurHasBOM(hasBOM);
 
 
 
-    ui->action_BOM->setChecked(curHasBOM_);
+    // ui->action_BOM->setChecked(curHasBOM());
 
     ui->plainTextEdit->document()->setModified(false);
     setWindowModified(false);
@@ -222,16 +232,24 @@ void MainWindow::setCurrentFile(const QString &fileName,
 
 
 
-    QString statusText;
-    if(codec)
-        statusText += codec->name();
-    if(curHasBOM_)
-        statusText += " (BOM)";
 
-    statusLabelCodec_.setText(statusText);
 
 
     updateTitle();
+    updateStatusText();
 }
 
 
+void MainWindow::setCurCodec(const char* codecText)
+{
+    setCurCodec(QTextCodec::codecForName(codecText));
+}
+void MainWindow::setCurCodec(QTextCodec* codec)
+{
+    if(!codec)
+        codec = GetUtf8Codec();
+
+    curCodec_x = codec;
+    Q_ASSERT(curCodec_x);
+    updateStatusText();
+}

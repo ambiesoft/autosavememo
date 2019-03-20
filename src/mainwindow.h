@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QLabel>
+// #include <QTextCodec>
 
 QT_BEGIN_NAMESPACE
 class QSessionManager;
@@ -35,6 +36,8 @@ class MainWindow : public QMainWindow
         savedOnce_xxx = b;
         statusAutomode_x.setText(tr("Autosave:") + " " + (b ? "ON" : "OFF"));
     }
+    void uncheckAllCharcterCoding();
+
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow() override;
@@ -60,15 +63,17 @@ private slots:
     void commitData(QSessionManager &);
 #endif
 
-    void on_action_Wrap_toggled(bool arg1);
-
+    void on_action_Wrap_toggled(bool b);
     bool on_action_SaveAs_triggered();
-
     void on_action_About_triggered();
+    void on_action_UTF8_without_BOM_toggled(bool b);
+    void on_action_UTF8_with_BOM_toggled(bool b);
+    void on_action_EUCJP_toggled(bool b);
+    void on_action_ShiftJIS_toggled(bool b);
+    void onCharacterCode_AboutToShow();
+    void on_action_UTF_16LE_toggled(bool arg1);
 
-
-
-    void on_action_BOM_toggled(bool arg1);
+    void on_action_UTF_16LE_with_BOM_toggled(bool arg1);
 
 private:
     bool saveFile(const QString &fileName,
@@ -78,13 +83,29 @@ private:
                         QTextCodec* codec=nullptr,
                         bool hasBOM=false);
     void updateTitle();
+    void updateStatusText();
 
     Ui::MainWindow *ui;
 
+    // Current file info
     QString curFile_;
     QByteArray curAllBytes_;
-    QTextCodec* curCodec_=nullptr;
-    bool curHasBOM_=false;
+    QTextCodec* curCodec_x=nullptr;
+    QTextCodec* curCodec() const {
+        return curCodec_x;
+    }
+    void setCurCodec(const char* codecText);
+    void setCurCodec(QTextCodec* codec);
+
+
+    bool curHasBOM_x=false;
+    bool curHasBOM() const {
+        return curHasBOM_x;
+    }
+    void setCurHasBOM(bool b) {
+        curHasBOM_x=b;
+        updateStatusText();
+    }
 };
 
 #endif // MAINWINDOW_H

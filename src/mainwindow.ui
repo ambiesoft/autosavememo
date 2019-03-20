@@ -45,7 +45,7 @@
      <x>0</x>
      <y>0</y>
      <width>708</width>
-     <height>22</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -61,8 +61,20 @@
     <property name="title">
      <string>&amp;Edit</string>
     </property>
+    <widget class="QMenu" name="menu_Character_Code">
+     <property name="title">
+      <string>&amp;Character Code</string>
+     </property>
+     <addaction name="action_UTF8"/>
+     <addaction name="action_UTF8_with_BOM"/>
+     <addaction name="action_EUCJP"/>
+     <addaction name="action_ShiftJIS"/>
+     <addaction name="action_UTF_16LE"/>
+     <addaction name="action_UTF_16LE_with_BOM"/>
+    </widget>
+    <addaction name="menu_Character_Code"/>
+    <addaction name="separator"/>
     <addaction name="action_Wrap"/>
-    <addaction name="action_BOM"/>
    </widget>
    <widget class="QMenu" name="menu_Help">
     <property name="title">
@@ -128,12 +140,52 @@
     <string>&amp;About...</string>
    </property>
   </action>
-  <action name="action_BOM">
+  <action name="action_UTF8">
    <property name="checkable">
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>&amp;BOM</string>
+    <string>&amp;UTF8</string>
+   </property>
+  </action>
+  <action name="action_UTF8_with_BOM">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>UTF8 with &amp;BOM</string>
+   </property>
+  </action>
+  <action name="action_EUCJP">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;EUCJP</string>
+   </property>
+  </action>
+  <action name="action_ShiftJIS">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;ShiftJIS</string>
+   </property>
+  </action>
+  <action name="action_UTF_16LE">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>UTF-16LE</string>
+   </property>
+  </action>
+  <action name="action_UTF_16LE_with_BOM">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>UTF-16LE with BOM</string>
    </property>
   </action>
  </widget>
