@@ -88,11 +88,12 @@ void MainWindow::loadFile(const QString &fileName)
     else
     {
         QTextCodec* codec = nullptr;
-        if (Q_UNLIKELY(!GetDetectedCodec(allBytes, codec) || !codec))
+        if (Q_UNLIKELY(!GetDetectedCodecICU(allBytes, codec) || !codec))
 		{
             Alert(this,tr("Could not detect codec."));
             return;
-		}
+        }
+        in.setAutoDetectUnicode(false);
 		in.setCodec(codec);
     }
 

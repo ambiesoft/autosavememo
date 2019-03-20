@@ -90,3 +90,16 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 DISTFILES += \
     app.rc \
     ../History.txt
+
+
+# ICU
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../icu/icu4c/lib/ -licutu -licuuc -licuio -licuin -licudt
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../icu/icu4c/lib/ -licutud -licuucd -licuiod -licuind -licudt
+#win32
+#{
+#    message("ICU LIB...")
+#    LIBS += -L$$PWD/../icu/icu4c/lib/ -licutu -licuuc -licuio -icuin -licudt -licutest
+#}
+
+INCLUDEPATH += $$PWD/../icu/icu4c/include
+DEPENDPATH += $$PWD/../icu/icu4c/include

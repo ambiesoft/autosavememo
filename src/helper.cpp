@@ -1,3 +1,4 @@
+#include <memory>
 
 #include <QApplication>
 #include <QCommandLineParser>
@@ -12,9 +13,13 @@
 
 #include "consts.h"
 
+#include "helper.h"
+
+
 using namespace Consts;
 using namespace AmbiesoftQt;
-#include "helper.h"
+using namespace std;
+
 
 struct EncodingInfo {
     // The standard name for this encoding.
@@ -247,7 +252,7 @@ const char* MyEncodingName2(Encoding enc) {
 }
 }
 
-bool GetDetectedCodec(const QByteArray& array, QTextCodec*& codec)
+bool GetDetectedCodecGoogle(const QByteArray& array, QTextCodec*& codec)
 {
     if(Q_UNLIKELY(array.isEmpty()))
     {
@@ -281,5 +286,159 @@ bool GetDetectedCodec(const QByteArray& array, QTextCodec*& codec)
     codec = QTextCodec::codecForName(MyEncodingName2(enc));
     if(!codec)
         return false;
+    return true;
+}
+
+#include "unicode/utypes.h"
+
+#include "unicode/ucsdet.h"
+#include "unicode/ucnv.h"
+#include "unicode/ustring.h"
+
+#define NEW_ARRAY(type,count) (type *) malloc((count) * sizeof(type))
+#define DELETE_ARRAY(array) free(array)
+
+static int32_t preflight(const UChar *src, int32_t length, UConverter *cnv)
+{
+    UErrorCode status;
+    char buffer[1024];
+    char *dest, *destLimit = buffer + sizeof(buffer);
+    const UChar *srcLimit = src + length;
+    int32_t result = 0;
+
+    do {
+        dest = buffer;
+        status = U_ZERO_ERROR;
+        ucnv_fromUnicode(cnv, &dest, destLimit, &src, srcLimit, 0, TRUE, &status);
+        result += (int32_t) (dest - buffer);
+    } while (status == U_BUFFER_OVERFLOW_ERROR);
+
+    return result;
+}
+static char *extractBytes(const UChar *src, int32_t length, const char *codepage, int32_t *byteLength)
+{
+    UErrorCode status = U_ZERO_ERROR;
+    UConverter *cnv = ucnv_open(codepage, &status);
+    int32_t byteCount = preflight(src, length, cnv);
+    const UChar *srcLimit = src + length;
+    char *bytes = NEW_ARRAY(char, byteCount + 1);
+    char *dest = bytes, *destLimit = bytes + byteCount + 1;
+
+    ucnv_fromUnicode(cnv, &dest, destLimit, &src, srcLimit, 0, TRUE, &status);
+    ucnv_close(cnv);
+
+    *byteLength = byteCount;
+    return bytes;
+}
+
+static void freeBytes(char *bytes)
+{
+    DELETE_ARRAY(bytes);
+}
+
+void static log_err(const char* p, const char* q=nullptr){}
+void static log_err(const char* p, int){}
+bool ccc(const QByteArray& array, QTextCodec*& codec)
+{
+
+    UErrorCode status = U_ZERO_ERROR;
+    /* Notice the BOM on the start of this string */
+    static const UChar chars[] = {
+        0xFEFF, 0x0623, 0x0648, 0x0631, 0x0648, 0x0628, 0x0627, 0x002C,
+        0x0020, 0x0628, 0x0631, 0x0645, 0x062c, 0x064a, 0x0627, 0x062a,
+        0x0020, 0x0627, 0x0644, 0x062d, 0x0627, 0x0633, 0x0648, 0x0628,
+        0x0020, 0x002b, 0x0020, 0x0627, 0x0646, 0x062a, 0x0631, 0x0646,
+        0x064a, 0x062a, 0x0000};
+    int32_t beLength = 0, leLength = 0, cLength = _countof(chars);
+    char *beBytes = extractBytes(chars, cLength, "UTF-16BE", &beLength);
+    char *leBytes = extractBytes(chars, cLength, "UTF-16LE", &leLength);
+    UCharsetDetector *csd = ucsdet_open(&status);
+    const UCharsetMatch *match;
+    const char *name;
+    int32_t conf;
+
+    ucsdet_setText(csd, beBytes, beLength, &status);
+    match = ucsdet_detect(csd, &status);
+
+    if (match == NULL) {
+        log_err("Encoding detection failure for UTF-16BE: got no matches.\n");
+        goto try_le;
+    }
+
+    name  = ucsdet_getName(match, &status);
+    conf  = ucsdet_getConfidence(match, &status);
+
+    if (strcmp(name, "UTF-16BE") != 0) {
+        log_err("Encoding detection failure for UTF-16BE: got %s\n", name);
+    }
+
+    if (conf != 100) {
+        log_err("Did not get 100%% confidence for UTF-16BE: got %d\n", conf);
+    }
+
+try_le:
+    ucsdet_setText(csd, leBytes, leLength, &status);
+    match = ucsdet_detect(csd, &status);
+
+    if (match == NULL) {
+        log_err("Encoding detection failure for UTF-16LE: got no matches.\n");
+        goto bail;
+    }
+
+    name  = ucsdet_getName(match, &status);
+    conf = ucsdet_getConfidence(match, &status);
+
+
+    if (strcmp(name, "UTF-16LE") != 0) {
+        log_err("Enconding detection failure for UTF-16LE: got %s\n", name);
+    }
+
+    if (conf != 100) {
+        log_err("Did not get 100%% confidence for UTF-16LE: got %d\n", conf);
+    }
+
+bail:
+    freeBytes(leBytes);
+    freeBytes(beBytes);
+    ucsdet_close(csd);
+
+    return true;
+}
+
+//static UCharsetDetector* my_ucsdet_open(UErrorCode* status)
+//{
+//    return ucsdet_open(status);
+//}
+//static void my_ucsdet_close(UCharsetDetector* p)
+//{
+//    ucsdet_close(p);
+//}
+bool GetDetectedCodecICU(const QByteArray& array, QTextCodec*& codec)
+{
+    UErrorCode status = U_ZERO_ERROR;
+    unique_ptr<UCharsetDetector, void(*)(UCharsetDetector*)> csd(ucsdet_open(&status), ucsdet_close);
+
+    ucsdet_setText(csd.get(), array.data(), array.length(), &status);
+    const UCharsetMatch *match = ucsdet_detect(csd.get(), &status);
+
+    if (match == NULL)
+    {
+        return false;
+    }
+
+    const char *name = ucsdet_getName(match, &status);
+    int32_t conf  = ucsdet_getConfidence(match, &status);
+//    if(strcmp(name,"UTF-16BE")==0)
+//    {
+//        codec = QTextCodec::codecForMib(1013);
+//    }
+//    else if(strcmp(name,"UTF-16LE")==0)
+//    {
+//        codec = QTextCodec::codecForMib(1014);
+//    }
+//    else
+    {
+        codec = QTextCodec::codecForName(name);
+    }
     return true;
 }

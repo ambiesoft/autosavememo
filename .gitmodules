@@ -1,3 +1,6 @@
 [submodule "compact_enc_det"]
 	path = compact_enc_det
 	url = https://github.com/google/compact_enc_det.git
+[submodule "icu"]
+	path = icu
+	url = https://github.com/unicode-org/icu.git
