@@ -87,11 +87,19 @@ void MainWindow::loadFile(const QString &fileName)
         in.setAutoDetectUnicode(true);
     else
     {
+        // First try to dectect by Google,
+        // if it failed or not UTF,
+        // Use ICU
         QTextCodec* codec = nullptr;
-        if (Q_UNLIKELY(!GetDetectedCodecICU(allBytes, codec) || !codec))
-		{
-            Alert(this,tr("Could not detect codec."));
-            return;
+        if (!GetDetectedCodecGoogle(allBytes, codec) || !codec ||
+                (codec->name().left(3) != "UTF"))
+        {
+            codec = nullptr;
+            if (Q_UNLIKELY(!GetDetectedCodecICU(allBytes, codec) || !codec))
+            {
+                Alert(this,tr("Could not detect codec."));
+                return;
+            }
         }
         in.setAutoDetectUnicode(false);
 		in.setCodec(codec);

@@ -336,9 +336,9 @@ static void freeBytes(char *bytes)
     DELETE_ARRAY(bytes);
 }
 
-void static log_err(const char* p, const char* q=nullptr){}
-void static log_err(const char* p, int){}
-bool ccc(const QByteArray& array, QTextCodec*& codec)
+void static log_err(const char*, const char* q=nullptr){Q_UNUSED(q);}
+void static log_err(const char*, int){}
+bool ccc(const QByteArray&, QTextCodec*&)
 {
 
     UErrorCode status = U_ZERO_ERROR;
@@ -421,24 +421,15 @@ bool GetDetectedCodecICU(const QByteArray& array, QTextCodec*& codec)
     ucsdet_setText(csd.get(), array.data(), array.length(), &status);
     const UCharsetMatch *match = ucsdet_detect(csd.get(), &status);
 
-    if (match == NULL)
+    if (match == nullptr)
     {
         return false;
     }
 
     const char *name = ucsdet_getName(match, &status);
-    int32_t conf  = ucsdet_getConfidence(match, &status);
-//    if(strcmp(name,"UTF-16BE")==0)
-//    {
-//        codec = QTextCodec::codecForMib(1013);
-//    }
-//    else if(strcmp(name,"UTF-16LE")==0)
-//    {
-//        codec = QTextCodec::codecForMib(1014);
-//    }
-//    else
-    {
-        codec = QTextCodec::codecForName(name);
-    }
+    //int32_t conf  = ucsdet_getConfidence(match, &status);
+
+    codec = QTextCodec::codecForName(name);
+
     return true;
 }

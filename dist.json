@@ -38,7 +38,10 @@
         "Qt5Widgets.dll",
         "README.md",
         "ja-JP\\Ambiesoft.FolderConfig.resources.dll",
-        "platforms\\qwindows.dll"    
+        "platforms\\qwindows.dll",
+		"icuuc64.dll",
+		"icuin64.dll",
+		"icudt64.dll"
     ],
 
 

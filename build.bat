@@ -12,13 +12,17 @@ if not exist %DISTDIR%\ (
   goto :error
 )
 
-copy /y %~dp0history.txt "%DISTDIR%\"
-copy /y %~dp0README.md "%DISTDIR%\"
-copy /y %~dp0README.jp.md "%DISTDIR%\"
-copy /y %~dp0LICENSE "%DISTDIR%\"
+copy /y "%~dp0history.txt" "%DISTDIR%\"
+copy /y "%~dp0README.md" "%DISTDIR%\"
+copy /y "%~dp0README.jp.md" "%DISTDIR%\"
+copy /y "%~dp0LICENSE" "%DISTDIR%\"
 
-xcopy C:\Linkout\FolderConfig\* "%DISTDIR%\" /E /Y
-copy /y %~dp0src\FolderConfig.ini "%DISTDIR%\"
+xcopy "C:\Linkout\FolderConfig\*" "%DISTDIR%\" /E /Y
+copy /y "%~dp0src\FolderConfig.ini" "%DISTDIR%\"
+
+copy /y "%~dp0icu\icu4c\bin\icuin64.dll" "%DISTDIR%\"
+copy /y "%~dp0icu\icu4c\bin\icuuc64.dll" "%DISTDIR%\"
+copy /y "%~dp0icu\icu4c\bin\icudt64.dll" "%DISTDIR%\"
 
 if %PYTHONEXE%x==x (
   echo PYTHONEXE not defined.

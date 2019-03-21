@@ -183,6 +183,13 @@ void MainWindow::onCharacterCode_AboutToShow()
         else
             ui->action_UTF_16LE->setChecked(true);
     }
+    else if(curCodec()==QTextCodec::codecForName("UTF-16BE"))
+    {
+        if(curHasBOM())
+            ui->action_UTF_16BE_with_BOM->setChecked(true);
+        else
+            ui->action_UTF_16BE->setChecked(true);
+    }
     else
     {
         Q_ASSERT(false);
@@ -213,7 +220,7 @@ void MainWindow::onCharacterCode_AboutToShow()
 //"KOI8-U", "KOI8-RU", "KOI8-R", "csKOI8R", "iscii-mlm", "iscii-knd", "iscii-tlg",
 //"iscii-tml", "iscii-ori", "iscii-gjr", "iscii-pnj", "iscii-bng", "iscii-dev", "TSCII")
 
-void MainWindow::on_action_UTF8_without_BOM_toggled(bool b)
+void MainWindow::on_action_UTF8_toggled(bool b)
 {
     if(!b)
         return;
@@ -265,4 +272,24 @@ void MainWindow::on_action_UTF_16LE_with_BOM_toggled(bool b)
 
     setCurCodec("UTF-16LE");
     setCurHasBOM(false);
+}
+
+
+
+void MainWindow::on_action_UTF_16BE_toggled(bool b)
+{
+    if(!b)
+        return;
+
+    setCurCodec("UTF-16BE");
+    setCurHasBOM(false);
+}
+
+void MainWindow::on_action_UTF_16BE_with_BOM_toggled(bool b)
+{
+    if(!b)
+        return;
+
+    setCurCodec("UTF-16BE");
+    setCurHasBOM(true);
 }

@@ -26,8 +26,14 @@ CONFIG += c++11
 
 INCLUDEPATH += ../compact_enc_det \
 
-!exists( ../compact_enc_det/compact_enc_det/compact_enc_det.cc ) {
-    error( "Submodule not found: run 'git submodule update -i'" )
+win32 {
+    !exists( ../compact_enc_det/compact_enc_det/compact_enc_det.cc ) {
+        error( "Submodule not found: run 'git submodule update -i'" )
+    }
+    !exists( ../icu/icu4c/bin/icuin.lib ) {
+        # copy lib/* to bin/
+        error( "ICU not ready." )
+    }
 }
 
 SOURCES += \
@@ -64,18 +70,14 @@ RC_FILE = app.rc
 PRECOMPILED_HEADER = stable.h
 
 # ..\compact_enc_det/compact_enc_det/compact_enc_det_generated_tables.h:1854:1: error: narrowing conversion of '139' from 'int' to 'char' inside { } [-Wnarrowing]
-win32-g++ {
-    QMAKE_CXXFLAGS += -Wno-narrowing
+win32{
     HEADERS += ../../lsMisc/GetLastErrorString.h \
 
     SOURCES += ../../lsMisc/stdQt/stdQt_win32.cpp \
         ../../lsMisc/GetLastErrorString.cpp \
 }
-win32-msvc*{
-    HEADERS += ../../lsMisc/GetLastErrorString.h \
-
-    SOURCES += ../../lsMisc/stdQt/stdQt_win32.cpp \
-        ../../lsMisc/GetLastErrorString.cpp \
+win32-g++ {
+    QMAKE_CXXFLAGS += -Wno-narrowing
 }
 linux-g++ {
     QMAKE_CXXFLAGS += -Wno-narrowing
@@ -92,14 +94,32 @@ DISTFILES += \
     ../History.txt
 
 
+linux-g++:QMAKE_TARGET.arch = $$QMAKE_HOST.arch
+linux-g++-32:QMAKE_TARGET.arch = x86
+linux-g++-64:QMAKE_TARGET.arch = x86_64
+
 # ICU
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../icu/icu4c/lib/ -licutu -licuuc -licuio -licuin -licudt
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../icu/icu4c/lib/ -licutud -licuucd -licuiod -licuind -licudt
-#win32
-#{
-#    message("ICU LIB...")
-#    LIBS += -L$$PWD/../icu/icu4c/lib/ -licutu -licuuc -licuio -icuin -licudt -licutest
-#}
+win32 {
+    !contains(QMAKE_TARGET.arch, x86_64) {
+        message("x86 build")
+
+        CONFIG(release, debug|release) {
+            message("release build")
+            LIBS += -L$$PWD/../icu/icu4c/bin/ -licutu -licuuc -licuio -licuin -licudt
+        }
+        else:CONFIG(debug, debug|release) {
+            LIBS += -L$$PWD/../icu/icu4c/bin/ -licutud -licuucd -licuiod -licuind -licudt
+        }
+    } else {
+        message("x86_64 build")
+
+        CONFIG(release, debug|release): LIBS += -L$$PWD/../icu/icu4c/bin64/ -licutu -licuuc -licuio -licuin -licudt
+        else:CONFIG(debug, debug|release): LIBS += -L$$PWD/../icu/icu4c/bin64/ -licutud -licuucd -licuiod -licuind -licudt
+    }
+
+    message($$LIBS)
+}
+
 
 INCLUDEPATH += $$PWD/../icu/icu4c/include
 DEPENDPATH += $$PWD/../icu/icu4c/include

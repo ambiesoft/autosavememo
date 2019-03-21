@@ -66,14 +66,15 @@ private slots:
     void on_action_Wrap_toggled(bool b);
     bool on_action_SaveAs_triggered();
     void on_action_About_triggered();
-    void on_action_UTF8_without_BOM_toggled(bool b);
+    void on_action_UTF8_toggled(bool b);
     void on_action_UTF8_with_BOM_toggled(bool b);
     void on_action_EUCJP_toggled(bool b);
     void on_action_ShiftJIS_toggled(bool b);
     void onCharacterCode_AboutToShow();
-    void on_action_UTF_16LE_toggled(bool arg1);
-
-    void on_action_UTF_16LE_with_BOM_toggled(bool arg1);
+    void on_action_UTF_16LE_toggled(bool b);
+    void on_action_UTF_16LE_with_BOM_toggled(bool b);
+    void on_action_UTF_16BE_toggled(bool b);
+    void on_action_UTF_16BE_with_BOM_toggled(bool b);
 
 private:
     bool saveFile(const QString &fileName,
