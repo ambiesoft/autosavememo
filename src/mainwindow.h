@@ -21,7 +21,6 @@ class MainWindow : public QMainWindow
 
     using ParentClass = QMainWindow;
 
-    QString fileDirectory_;
     bool getByteArrayFromFile(QFile& file,
                                     QByteArray& qba,
                                     const qint64& maxsize);
@@ -47,8 +46,6 @@ public:
 
 private:
     bool maybeSave();
-    void readSettings();
-    void writeSettings();
 
 protected:
     void closeEvent(QCloseEvent *event) override;
@@ -75,6 +72,12 @@ private slots:
     void on_action_UTF_16LE_with_BOM_toggled(bool b);
     void on_action_UTF_16BE_toggled(bool b);
     void on_action_UTF_16BE_with_BOM_toggled(bool b);
+
+    void on_action_Cut_triggered();
+
+    void on_action_Copy_triggered();
+
+    void on_action_Paste_triggered();
 
 private:
     bool saveFile(const QString &fileName,

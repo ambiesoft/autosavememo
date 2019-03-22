@@ -41,7 +41,6 @@ SOURCES += \
         mainwindow.cpp \
     ../../lsMisc/stdQt/settings.cpp \
     ../../lsMisc/stdQt/stdQt.cpp \
-    mainwindow_serialize.cpp \
     mainwindow_my.cpp \
     mainwindow_cdtor.cpp \
     ../compact_enc_det/util/languages/languages.cc \
@@ -49,6 +48,7 @@ SOURCES += \
     ../compact_enc_det/compact_enc_det/compact_enc_det.cc \
     ../compact_enc_det/compact_enc_det/compact_enc_det_hint_code.cc \
     helper.cpp \
+    autosavememoapp.cpp
 
 
 HEADERS += \
@@ -59,7 +59,8 @@ HEADERS += \
     stable.h \
     ../compact_enc_det/compact_enc_det/compact_enc_det.h \
     helper.h \
-    stdafx.h
+    stdafx.h \
+    autosavememoapp.h
 
 
 FORMS += \

@@ -14,6 +14,8 @@
 #include "../../lsMisc/stdQt/settings.h"
 #include "../../lsMisc/stdQt/stdQt.h"
 
+#include "autosavememoapp.h"
+
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
@@ -60,7 +62,8 @@ void MainWindow::documentWasModified()
 void MainWindow::closeEvent(QCloseEvent *event)
 {
     if (maybeSave()) {
-        writeSettings();
+        // writeSettings();
+        theApp->setGeometry(saveGeometry());
         event->accept();
     } else {
         event->ignore();
@@ -96,11 +99,11 @@ void MainWindow::on_action_Open_triggered()
     if (maybeSave()) {
         QString fileName = QFileDialog::getOpenFileName(this,
                                                         qAppName(),
-                                                        fileDirectory_);
+                                                        theApp->fileDirectory());
         if (fileName.isEmpty())
             return;
 
-        fileDirectory_ = QFileInfo(fileName).path();
+        theApp->setFileDirectory(QFileInfo(fileName).path());
         loadFile(fileName);
     }
 }
@@ -122,18 +125,19 @@ void MainWindow::commitData(QSessionManager &manager)
 void MainWindow::on_action_Wrap_toggled(bool b)
 {
     ui->plainTextEdit->setWordWrapMode(b ? QTextOption::WrapAnywhere : QTextOption::NoWrap);
+    theApp->setWordWrap(b);
 }
 
 bool MainWindow::on_action_SaveAs_triggered()
 {
     QFileDialog dialog(this);
-    dialog.setDirectory(fileDirectory_);
+    dialog.setDirectory(theApp->fileDirectory());
     dialog.setWindowModality(Qt::WindowModal);
     dialog.setAcceptMode(QFileDialog::AcceptSave);
     if (dialog.exec() != QDialog::Accepted)
         return false;
     QString file = dialog.selectedFiles().first();
-    fileDirectory_ = QFileInfo(file).path();
+    theApp->setFileDirectory(QFileInfo(file).path());
     return saveFile(file, curCodec() ? curCodec() : GetUtf8Codec());
 }
 
@@ -292,4 +296,19 @@ void MainWindow::on_action_UTF_16BE_with_BOM_toggled(bool b)
 
     setCurCodec("UTF-16BE");
     setCurHasBOM(true);
+}
+
+void MainWindow::on_action_Cut_triggered()
+{
+    ui->plainTextEdit->cut();
+}
+
+void MainWindow::on_action_Copy_triggered()
+{
+    ui->plainTextEdit->copy();
+}
+
+void MainWindow::on_action_Paste_triggered()
+{
+    ui->plainTextEdit->paste();
 }

@@ -2,7 +2,7 @@
 //#include <QSettings>
 //#include <QTextStream>
 //#include <QDir>
-//#include <QDesktopWidget>
+#include <QDesktopWidget>
 //#include <QApplication>
 //#include <QFileDialog>
 //#include <QSessionManager>
@@ -12,6 +12,8 @@
 
 //#include "../../lsMisc/stdQt/settings.h"
 //#include "../../lsMisc/stdQt/stdQt.h"
+
+#include "autosavememoapp.h"
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
@@ -23,6 +25,12 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    QPalette palette = ui->plainTextEdit->palette();
+    palette.setColor(QPalette::Highlight, QColor(Qt::GlobalColor::lightGray));
+    palette.setColor(QPalette::HighlightedText, palette.text().color());
+    ui->plainTextEdit->setPalette(palette);
+
 
     ui->action_New->setIcon(this->style()->standardIcon(QStyle::SP_FileIcon));
     ui->action_Open->setIcon(this->style()->standardIcon(QStyle::SP_DialogOpenButton));
@@ -46,8 +54,18 @@ MainWindow::MainWindow(QWidget *parent) :
             this, &MainWindow::commitData);
 #endif
 
-    // Read from ini
-    readSettings();
+    if (theApp->geometry().isEmpty()) {
+        const QRect availableGeometry = QApplication::desktop()->availableGeometry(this);
+        resize(availableGeometry.width() / 3, availableGeometry.height() / 2);
+        move((availableGeometry.width() - width()) / 2,
+             (availableGeometry.height() - height()) / 2);
+    } else {
+        restoreGeometry(theApp->geometry());
+    }
+
+
+    ui->action_Wrap->setChecked(theApp->wordWrap());
+    on_action_Wrap_toggled(theApp->wordWrap());
 
     setCurrentFile(QString(), QByteArray(), nullptr, false);
     setUnifiedTitleAndToolBarOnMac(true);

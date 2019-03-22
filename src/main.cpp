@@ -4,9 +4,13 @@
 #include <QSharedPointer>
 #include <QVector>
 
-#include "consts.h"
-using namespace Consts;
+#include "../../lsMisc/stdQt/stdQt.h"
 
+#include "autosavememoapp.h"
+#include "consts.h"
+
+using namespace Consts;
+using namespace AmbiesoftQt;
 
 void processCommandLine(QCoreApplication& app, QStringList& files)
 {
@@ -53,7 +57,7 @@ void noMessageOutput(QtMsgType type, const QMessageLogContext &context, const QS
 
 int main(int argc, char *argv[])
 {
-    QApplication app(argc, argv);
+    AutosavememoApp app(argc, argv);
     QCoreApplication::setOrganizationName(ORGANIZATION);
     QCoreApplication::setApplicationName(APPNAME);
     QCoreApplication::setApplicationVersion(APPVER);
@@ -64,6 +68,13 @@ int main(int argc, char *argv[])
         qInstallMessageHandler(noMessageOutput);
     }
 #endif
+
+    if(!app.readSettings())
+    {
+        Alert(nullptr,
+              QObject::tr("Failed to read setting."));
+        return 1;
+    }
 
     QStringList filesToOpen;
     processCommandLine(app, filesToOpen);
@@ -96,5 +107,14 @@ int main(int argc, char *argv[])
     {
         win->show();
     }
-    return app.exec();
+
+    int ret = app.exec();
+
+    if(!app.writeSettings())
+    {
+        Alert(nullptr,
+              QObject::tr("Failed to write settings."));
+        return 1;
+    }
+    return ret;
 }
