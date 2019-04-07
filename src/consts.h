@@ -4,7 +4,7 @@
 namespace Consts {
     const char ORGANIZATION[] = "Ambiesoft";
     const char APPNAME[] = "autosavememo";
-    const char APPVER[] = "1.0.7";
+    const char APPVER[] = "1.0.8";
 
     const char SECTION_GEOMETRY[] = "geometry";
     const char SECTION_WORDWRAP[] = "WordWrap";

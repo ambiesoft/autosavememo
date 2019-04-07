@@ -66,6 +66,13 @@ bool MainWindow::getByteArrayFromFile(QFile& file,
     qba = file.peek(fileSize);
     return true;
 }
+bool isCodecOK(const QByteArray& bites, const QString& texts, const QTextCodec* codec)
+{
+    QString textsAfter = codec->toUnicode(bites);
+    QByteArray bitesAfter = codec->fromUnicode(texts);
+
+    return bites==bitesAfter && texts==textsAfter;
+}
 void MainWindow::loadFile(const QString &fileName)
 {
     QFile file(fileName);
@@ -81,6 +88,8 @@ void MainWindow::loadFile(const QString &fileName)
     if(!getByteArrayFromFile(file, allBytes, 10 * 1024 * 1024))
         return;
 
+    QString readAll;
+    QTextCodec* codec = nullptr;
     const bool hasByteOrderMark = QTextCodec::codecForUtfText(allBytes, nullptr) != nullptr;
     QTextStream in(&file);
     if(hasByteOrderMark)
@@ -90,7 +99,7 @@ void MainWindow::loadFile(const QString &fileName)
         // First try to dectect by Google,
         // if it failed or not UTF,
         // Use ICU
-        QTextCodec* codec = nullptr;
+        codec = nullptr;
         if (!GetDetectedCodecGoogle(allBytes, codec) || !codec ||
                 (codec->name().left(3) != "UTF"))
         {
@@ -105,9 +114,17 @@ void MainWindow::loadFile(const QString &fileName)
 		in.setCodec(codec);
     }
 
+    readAll = in.readAll();
+    if(!isCodecOK(allBytes, readAll, codec))
+    {
+        Alert(this,tr("Could not open '%1' because texts is irreversal with the codec '%2'.").
+              arg(fileName, QString::fromStdString(codec->name().toStdString())));
+        return;
+    }
+
     {
         CWaitCursor wc;
-        ui->plainTextEdit->setPlainText(in.readAll());
+        ui->plainTextEdit->setPlainText(readAll);
     }
 
     qDebug() << "codec = " << in.codec()->name();

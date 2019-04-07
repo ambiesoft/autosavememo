@@ -1,3 +1,7 @@
+2019/04/07 ver1.0.8
+Fix: Deny to open file if detected codec can not convert byte to
+text and vice versa.
+
 2019/03/21 ver1.0.7
 Add ICU
 
