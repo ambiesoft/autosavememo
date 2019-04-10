@@ -66,12 +66,26 @@ bool MainWindow::getByteArrayFromFile(QFile& file,
     qba = file.peek(fileSize);
     return true;
 }
-bool isCodecOK(const QByteArray& bites, const QString& texts, const QTextCodec* codec)
+bool isCodecOK(const QByteArray& bites,
+               const QString& texts,
+               const QTextCodec* codec,
+               const bool hasByteOrderMark)
 {
     QString textsAfter = codec->toUnicode(bites);
-    QByteArray bitesAfter = codec->fromUnicode(texts);
 
-    return bites==bitesAfter && texts==textsAfter;
+    // Add BOM to bitesAfter
+    QTextCodec::ConverterState cs(hasByteOrderMark ?
+                                      QTextCodec::ConversionFlag::DefaultConversion :
+                                      QTextCodec::ConversionFlag::IgnoreHeader);
+    QByteArray bitesAfter = codec->fromUnicode(texts.unicode(), texts.size(), &cs);
+
+    if(bites != bitesAfter)
+        return false;
+
+    if(texts != textsAfter)
+        return false;
+
+    return true;
 }
 void MainWindow::loadFile(const QString &fileName)
 {
@@ -89,8 +103,8 @@ void MainWindow::loadFile(const QString &fileName)
         return;
 
     QString readAll;
-    QTextCodec* codec = nullptr;
-    const bool hasByteOrderMark = QTextCodec::codecForUtfText(allBytes, nullptr) != nullptr;
+    QTextCodec* codec = QTextCodec::codecForUtfText(allBytes, nullptr);
+    const bool hasByteOrderMark = codec != nullptr;
     QTextStream in(&file);
     if(hasByteOrderMark)
         in.setAutoDetectUnicode(true);
@@ -115,7 +129,7 @@ void MainWindow::loadFile(const QString &fileName)
     }
 
     readAll = in.readAll();
-    if(!isCodecOK(allBytes, readAll, codec))
+    if(!isCodecOK(allBytes, readAll, codec, hasByteOrderMark))
     {
         Alert(this,tr("Could not open '%1' because texts is irreversal with the codec '%2'.").
               arg(fileName, QString::fromStdString(codec->name().toStdString())));
