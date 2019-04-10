@@ -71,9 +71,17 @@ bool isCodecOK(const QByteArray& bites,
                const QTextCodec* codec,
                const bool hasByteOrderMark)
 {
-    QString textsAfter = codec->toUnicode(bites);
+    QTextCodec::ConverterState csT(hasByteOrderMark ?
+                                      QTextCodec::ConversionFlag::DefaultConversion :
+                                      QTextCodec::ConversionFlag::DefaultConversion);
+    QString textsAfter = codec->toUnicode(bites.constData(), bites.size(), &csT);
 
     // Add BOM to bitesAfter
+    QTextCodec::ConverterState csNormalize(hasByteOrderMark ?
+                                      QTextCodec::ConversionFlag::DefaultConversion :
+                                      QTextCodec::ConversionFlag::IgnoreHeader);
+    QByteArray bitesNormalize = codec->fromUnicode(textsAfter.unicode(), textsAfter.size(), &csNormalize);
+
     QTextCodec::ConverterState cs(hasByteOrderMark ?
                                       QTextCodec::ConversionFlag::DefaultConversion :
                                       QTextCodec::ConversionFlag::IgnoreHeader);
