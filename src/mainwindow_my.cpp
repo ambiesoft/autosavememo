@@ -137,7 +137,10 @@ void MainWindow::loadFile(const QString &fileName)
     }
 
     readAll = in.readAll();
-    if(!isCodecOK(allBytes, readAll, codec, hasByteOrderMark))
+
+    // TODO: Not skip this
+    // if(!isCodecOK(allBytes, readAll, codec, hasByteOrderMark))
+    if(false)
     {
         Alert(this,tr("Could not open '%1' because texts is irreversal with the codec '%2'.").
               arg(fileName, QString::fromStdString(codec->name().toStdString())));
