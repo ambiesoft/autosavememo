@@ -22,6 +22,7 @@
 #include <QStyle>
 #include <QTextCodec>
 #include <QTextStream>
+#include <QTime>
 #include <QTimer>
 #include <QVector>
 

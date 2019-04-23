@@ -275,7 +275,7 @@ void MainWindow::setCurrentFile(const QString &fileName,
     if (curFile_.isEmpty())
     {
         setSavedOnce(false);
-        shownName = "untitled.txt";
+        shownName = tr("<New>");
     }
     setWindowFilePath(shownName);
 

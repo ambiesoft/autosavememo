@@ -72,15 +72,47 @@ void MainWindow::closeEvent(QCloseEvent *event)
 
 
 
-
+bool MainWindow::on_action_SaveAs_triggered()
+{
+    QFileDialog dialog(this);
+    dialog.setDirectory(theApp->fileDirectory());
+    dialog.setWindowModality(Qt::WindowModal);
+    dialog.setAcceptMode(QFileDialog::AcceptSave);
+    if (dialog.exec() != QDialog::Accepted)
+        return false;
+    QString file = dialog.selectedFiles().first();
+    theApp->setFileDirectory(QFileInfo(file).path());
+    return saveFile(file, curCodec() ? curCodec() : GetUtf8Codec());
+}
 
 bool MainWindow::on_action_Save_triggered()
 {
     if (curFile_.isEmpty()) {
-        return on_action_SaveAs_triggered();
-    } else {
-        return saveFile(curFile_);
+        // return on_action_SaveAs_triggered();
+        QString newFile;
+        QString baseDir=QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
+        if(baseDir.isEmpty() || !QDir(baseDir).exists())
+        {
+            Alert(this, tr("Failed to get the desktop directory."));
+            return false;
+        }
+        for(int i=0 ; i < 32; ++i)
+        {
+            newFile = pathCombine(baseDir,
+                                  QString("autosavememo-%1.txt").arg(QTime::currentTime().msecsSinceStartOfDay()));
+            if(!QFile::exists(newFile) && !QDir(newFile).exists())
+                break;
+        }
+        if(newFile.isEmpty())
+        {
+            Alert(this, tr("Failed to create new file in '%1'").arg(baseDir));
+            return false;
+        }
+
+        curFile_=newFile;
     }
+    return saveFile(curFile_);
+
 }
 
 
@@ -124,22 +156,11 @@ void MainWindow::commitData(QSessionManager &manager)
 
 void MainWindow::on_action_Wrap_toggled(bool b)
 {
-    ui->plainTextEdit->setWordWrapMode(b ? QTextOption::WrapAnywhere : QTextOption::NoWrap);
+    ui->plainTextEdit->setWordWrapMode(b ? QTextOption::WordWrap : QTextOption::NoWrap);
     theApp->setWordWrap(b);
 }
 
-bool MainWindow::on_action_SaveAs_triggered()
-{
-    QFileDialog dialog(this);
-    dialog.setDirectory(theApp->fileDirectory());
-    dialog.setWindowModality(Qt::WindowModal);
-    dialog.setAcceptMode(QFileDialog::AcceptSave);
-    if (dialog.exec() != QDialog::Accepted)
-        return false;
-    QString file = dialog.selectedFiles().first();
-    theApp->setFileDirectory(QFileInfo(file).path());
-    return saveFile(file, curCodec() ? curCodec() : GetUtf8Codec());
-}
+
 
 void MainWindow::on_action_About_triggered()
 {
@@ -311,4 +332,24 @@ void MainWindow::on_action_Copy_triggered()
 void MainWindow::on_action_Paste_triggered()
 {
     ui->plainTextEdit->paste();
+}
+
+void MainWindow::on_action_Undo_triggered()
+{
+    ui->plainTextEdit->undo();
+}
+
+void MainWindow::on_action_Redo_triggered()
+{
+    ui->plainTextEdit->redo();
+}
+
+void MainWindow::on_action_Zoom_In_triggered()
+{
+    ui->plainTextEdit->zoomIn();
+}
+
+void MainWindow::on_actio_Zoom_out_triggered()
+{
+    ui->plainTextEdit->zoomOut();
 }

@@ -74,6 +74,9 @@
      <addaction name="action_UTF_16BE"/>
      <addaction name="action_UTF_16BE_with_BOM"/>
     </widget>
+    <addaction name="action_Undo"/>
+    <addaction name="action_Redo"/>
+    <addaction name="separator"/>
     <addaction name="action_Cut"/>
     <addaction name="action_Copy"/>
     <addaction name="action_Paste"/>
@@ -88,7 +91,15 @@
     </property>
     <addaction name="action_About"/>
    </widget>
+   <widget class="QMenu" name="menu_View">
+    <property name="title">
+     <string>&amp;View</string>
+    </property>
+    <addaction name="action_Zoom_In"/>
+    <addaction name="actio_Zoom_out"/>
+   </widget>
    <addaction name="menu_File"/>
+   <addaction name="menu_View"/>
    <addaction name="menu_Edit"/>
    <addaction name="menu_Help"/>
   </widget>
@@ -102,6 +113,8 @@
    <addaction name="action_New"/>
    <addaction name="action_Open"/>
    <addaction name="action_Save"/>
+   <addaction name="action_Undo"/>
+   <addaction name="action_Redo"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="action_New">
@@ -223,6 +236,32 @@
   <action name="action_Paste">
    <property name="text">
     <string>&amp;Paste</string>
+   </property>
+  </action>
+  <action name="action_Undo">
+   <property name="text">
+    <string>&amp;Undo</string>
+   </property>
+  </action>
+  <action name="action_Redo">
+   <property name="text">
+    <string>&amp;Redo</string>
+   </property>
+  </action>
+  <action name="action_Zoom_In">
+   <property name="text">
+    <string>Zoom &amp;In</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl++</string>
+   </property>
+  </action>
+  <action name="actio_Zoom_out">
+   <property name="text">
+    <string>Zoom &amp;out</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+-</string>
    </property>
   </action>
  </widget>

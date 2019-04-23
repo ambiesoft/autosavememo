@@ -1,3 +1,7 @@
+2019/04/24 ver1.0.10
+Newly save will be saved on the desktop
+Change wordwrap method
+
 2019/04/11 ver1.0.9
 Skil encode check due to lack of understanding.
 

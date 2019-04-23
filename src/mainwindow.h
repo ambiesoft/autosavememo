@@ -79,6 +79,14 @@ private slots:
 
     void on_action_Paste_triggered();
 
+    void on_action_Undo_triggered();
+
+    void on_action_Redo_triggered();
+
+    void on_action_Zoom_In_triggered();
+
+    void on_actio_Zoom_out_triggered();
+
 private:
     bool saveFile(const QString &fileName,
                   QTextCodec* codec = nullptr);
