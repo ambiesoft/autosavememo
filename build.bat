@@ -1,5 +1,5 @@
 @echo off
-
+setlocal EnableDelayedExpansion
 if not exist %~dp0prepare.bat (
   echo prepare.bat not exist. Copy prepare.bat.sample and edit it.
   goto :error
@@ -13,16 +13,57 @@ if not exist %DISTDIR%\ (
 )
 
 copy /y "%~dp0history.txt" "%DISTDIR%\"
+IF %ERRORLEVEL% NEQ 0 (
+  ECHO Failed copy: history.txt
+  goto :error
+)
+
 copy /y "%~dp0README.md" "%DISTDIR%\"
+IF %ERRORLEVEL% NEQ 0 (
+  ECHO Failed copy: README.md
+  goto :error
+)
 copy /y "%~dp0README.jp.md" "%DISTDIR%\"
+IF %ERRORLEVEL% NEQ 0 (
+  ECHO Failed copy: README.jp.md
+  goto :error
+)
+
 copy /y "%~dp0LICENSE" "%DISTDIR%\"
+IF %ERRORLEVEL% NEQ 0 (
+  ECHO Failed copy: LICENSE
+  goto :error
+)
 
 xcopy "C:\Linkout\FolderConfig\*" "%DISTDIR%\" /E /Y
+IF %ERRORLEVEL% NEQ 0 (
+  ECHO Failed copy: C:\Linkout\FolderConfig\
+  goto :error
+)
+
 copy /y "%~dp0src\FolderConfig.ini" "%DISTDIR%\"
+IF %ERRORLEVEL% NEQ 0 (
+  ECHO Failed copy: FolderConfig.ini
+  goto :error
+)
 
 copy /y "%~dp0icu\icu4c\bin\icuin64.dll" "%DISTDIR%\"
+IF %ERRORLEVEL% NEQ 0 (
+  ECHO Failed copy: icuin64.dll
+  goto :error
+)
+
 copy /y "%~dp0icu\icu4c\bin\icuuc64.dll" "%DISTDIR%\"
+IF %ERRORLEVEL% NEQ 0 (
+  ECHO Failed copy: icuuc64.dll
+  goto :error
+)
+
 copy /y "%~dp0icu\icu4c\bin\icudt64.dll" "%DISTDIR%\"
+IF %ERRORLEVEL% NEQ 0 (
+  ECHO Failed copy: icudt64.dll
+  goto :error
+)
 
 if %PYTHONEXE%x==x (
   echo PYTHONEXE not defined.
