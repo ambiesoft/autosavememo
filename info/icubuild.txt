@@ -1,2 +1,0 @@
-1, Open icu\icu4c\source\allinone\allinone.sln in VisualStudio2017
-2, Move all files under icu\icu4c\lib to icu\icu4c\bin

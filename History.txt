@@ -1,3 +1,6 @@
+2019/04/27 ver1.0.11
+New build env
+
 2019/04/24 ver1.0.10
 Newly save will be saved on the desktop
 Change wordwrap method

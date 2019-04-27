@@ -47,19 +47,19 @@ IF %ERRORLEVEL% NEQ 0 (
   goto :error
 )
 
-copy /y "%~dp0icu\icu4c\bin\icuin64.dll" "%DISTDIR%\"
+copy /y "%~dp0%MYICUDIRNAME%\icu4c\bin\icuin64.dll" "%DISTDIR%\"
 IF %ERRORLEVEL% NEQ 0 (
   ECHO Failed copy: icuin64.dll
   goto :error
 )
 
-copy /y "%~dp0icu\icu4c\bin\icuuc64.dll" "%DISTDIR%\"
+copy /y "%~dp0%MYICUDIRNAME%\icu4c\bin\icuuc64.dll" "%DISTDIR%\"
 IF %ERRORLEVEL% NEQ 0 (
   ECHO Failed copy: icuuc64.dll
   goto :error
 )
 
-copy /y "%~dp0icu\icu4c\bin\icudt64.dll" "%DISTDIR%\"
+copy /y "%~dp0%MYICUDIRNAME%\icu4c\bin\icudt64.dll" "%DISTDIR%\"
 IF %ERRORLEVEL% NEQ 0 (
   ECHO Failed copy: icudt64.dll
   goto :error

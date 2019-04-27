@@ -30,11 +30,24 @@ win32 {
     !exists( ../compact_enc_det/compact_enc_det/compact_enc_det.cc ) {
         error( "Submodule not found: run 'git submodule update -i'" )
     }
-    !exists( ../icu/icu4c/bin/icuin.lib ) {
-        # copy lib/* to bin/
-        error( "ICU not ready." )
+}
+
+# See info/icu
+win32-msvc* {
+    MYICUDIR = icu.msvc
+    message(../$$MYICUDIR/icu4c/bin/libicuin.dll.a)
+    exists( ../$$MYICUDIR/icu4c/bin/icuin.lib ) {
+        MYICSVCLIB = -licutu -licuuc -licuio -licuin -licudt
     }
 }
+win32-g++ {
+    MYICUDIR = icu.mingw730_32
+    message(../$$MYICUDIR/icu4c/bin/libicuin.dll.a)
+    exists(../$$MYICUDIR/icu4c/bin/libicuin.dll.a) {
+        MYICSMINGWLIB = -llibicutu.dll -llibicuuc.dll -llibicudt.dll -llibicuin.dll -llibicuio.dll
+    }
+}
+
 
 SOURCES += \
         main.cpp \
@@ -100,27 +113,49 @@ linux-g++-32:QMAKE_TARGET.arch = x86
 linux-g++-64:QMAKE_TARGET.arch = x86_64
 
 # ICU
-win32 {
-    !contains(QMAKE_TARGET.arch, x86_64) {
-        message("x86 build")
-
-        CONFIG(release, debug|release) {
-            message("release build")
-            LIBS += -L$$PWD/../icu/icu4c/bin/ -licutu -licuuc -licuio -licuin -licudt
-        }
-        else:CONFIG(debug, debug|release) {
-            LIBS += -L$$PWD/../icu/icu4c/bin/ -licutud -licuucd -licuiod -licuind -licudt
-        }
-    } else {
-        message("x86_64 build")
-
-        CONFIG(release, debug|release): LIBS += -L$$PWD/../icu/icu4c/bin64/ -licutu -licuuc -licuio -licuin -licudt
-        else:CONFIG(debug, debug|release): LIBS += -L$$PWD/../icu/icu4c/bin64/ -licutud -licuucd -licuiod -licuind -licudt
+win32-msvc* {
+    message("MSVC")
+    isEmpty(MYICSVCLIB) {
+        # 1, git submodule init -u # this retrieve sources of the ICU.
+        # 2, build
+        # 3, copy lib/* to bin/
+        # see info/ for more
+        error( "ICU not ready." )
     }
 
-    message($$LIBS)
+    !contains(QMAKE_TARGET.arch, x86_64) {
+        message("x86 build")
+        LIBS += -L$$PWD/../$$MYICUDIR/icu4c/bin/ $$MYICSVCLIB
+
+    } else {
+        message("x86_64 build")
+        LIBS += -L$$PWD/../$$MYICUDIR/icu4c/bin64/ $$MYICSVCLIB
+    }
+}
+win32-g++ {
+    message("win32-g++")
+    isEmpty(MYICSMINGWLIB) {
+        # 1, git submodule init -u # this retrieve sources of the ICU.
+        # 2, build
+        # 3, copy lib/* to bin/
+        # see info/ for more
+        error( "ICU not ready." )
+    }
+
+    !contains(QMAKE_TARGET.arch, x86_64) {
+        message("x86 build")
+        LIBS += -L$$PWD/../$$MYICUDIR/icu4c/bin/ $$MYICSMINGWLIB
+
+    } else {
+        message("x86_64 build")
+        LIBS += -L$$PWD/../$$MYICUDIR/icu4c/bin64/ $$MYICSMINGWLIB
+    }
 }
 
+message($$LIBS)
 
-INCLUDEPATH += $$PWD/../icu/icu4c/include
-DEPENDPATH += $$PWD/../icu/icu4c/include
+
+INCLUDEPATH += $$PWD/../$$MYICUDIR/icu4c/include
+DEPENDPATH += $$PWD/../$$MYICUDIR/icu4c/include
+
+message($$INCLUDEPATH)

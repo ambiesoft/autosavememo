@@ -2,6 +2,7 @@ set PYTHONEXE=C:\local\python3\python.exe
 set QTROOT=C:\local\Qt
 set QTVERSION=5.11.1
 set QTVERSIONTOOLS=mingw53_32
+set QTMINGBIN=mingw530_32
 
 :: For Visual Studio 2017 x64
 ::call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat"
@@ -10,7 +11,7 @@ set QTVERSIONTOOLS=mingw53_32
 :: For MingW
 :: set PATH=<path to mingw bin>
 :: set MAKE=nmake
-set PATH=%QTROOT%\Tools\mingw530_32\bin;%PATH%
+set PATH=%QTROOT%\Tools\%QTMINGBIN%\bin;%PATH%
 set MAKE=mingw32-make.exe
 
 
