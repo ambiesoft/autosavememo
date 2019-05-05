@@ -9,6 +9,7 @@ class AutosavememoApp : public QApplication
     bool wordWrap_;
     QByteArray geometry_;
     QString fileDirectory_;
+    QString fontString_;
 public:
     AutosavememoApp(int &argc, char **argv);
     virtual ~AutosavememoApp();
@@ -37,6 +38,12 @@ public:
         fileDirectory_ = s;
     }
 
+    QString fontString() const {
+        return fontString_;
+    }
+    void setFontString(const QString& fontString) {
+        fontString_ = fontString;
+    }
 };
 
 extern AutosavememoApp* theApp;

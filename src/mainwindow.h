@@ -23,7 +23,9 @@ class MainWindow : public QMainWindow
 
     bool getByteArrayFromFile(QFile& file,
                                     QByteArray& qba,
-                                    const qint64& maxsize);
+                                    qint64 maxsize);
+    QFont defaultFont_;
+
     QLabel statusAutomode_x;
     QLabel statusLabelCodec_;
 
@@ -86,6 +88,10 @@ private slots:
     void on_action_Zoom_In_triggered();
 
     void on_actio_Zoom_out_triggered();
+
+    void on_action_Font_triggered();
+
+    void on_action_Close_triggered();
 
 private:
     bool saveFile(const QString &fileName,

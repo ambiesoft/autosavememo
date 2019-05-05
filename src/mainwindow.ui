@@ -56,6 +56,8 @@
     <addaction name="action_Open"/>
     <addaction name="action_Save"/>
     <addaction name="action_SaveAs"/>
+    <addaction name="separator"/>
+    <addaction name="action_Close"/>
    </widget>
    <widget class="QMenu" name="menu_Edit">
     <property name="title">
@@ -98,9 +100,16 @@
     <addaction name="action_Zoom_In"/>
     <addaction name="actio_Zoom_out"/>
    </widget>
+   <widget class="QMenu" name="menu_Option">
+    <property name="title">
+     <string>&amp;Option</string>
+    </property>
+    <addaction name="action_Font"/>
+   </widget>
    <addaction name="menu_File"/>
    <addaction name="menu_View"/>
    <addaction name="menu_Edit"/>
+   <addaction name="menu_Option"/>
    <addaction name="menu_Help"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
@@ -262,6 +271,16 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+-</string>
+   </property>
+  </action>
+  <action name="action_Font">
+   <property name="text">
+    <string>&amp;Font...</string>
+   </property>
+  </action>
+  <action name="action_Close">
+   <property name="text">
+    <string>&amp;Close</string>
    </property>
   </action>
  </widget>

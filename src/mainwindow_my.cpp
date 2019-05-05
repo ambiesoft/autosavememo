@@ -52,7 +52,7 @@ bool MainWindow::maybeSave()
 
 bool MainWindow::getByteArrayFromFile(QFile& file,
                                       QByteArray& qba,
-                                      const qint64& maxsize)
+                                      qint64 maxsize)
 {
     qint64 fileSize = file.size();
     if(maxsize != -1 && fileSize > maxsize)
@@ -237,10 +237,10 @@ bool MainWindow::saveFile(const QString &strFileName,
 
 void MainWindow::updateTitle()
 {
-    QString title=windowFilePath();
+    QString title = QFileInfo(windowFilePath()).fileName();
     if(ui->plainTextEdit->document()->isModified())
-        title+="[*]";
-    title += " - ";
+        title+=QLatin1String("[*]");
+    title += QLatin1String(" - ");
     title += qAppName();
     setWindowTitle(title);
 }
@@ -248,9 +248,9 @@ void MainWindow::updateStatusText()
 {
     QString statusText;
     if(curCodec())
-        statusText += curCodec()->name();
+        statusText += QString::fromLatin1(curCodec()->name());
     if(curHasBOM())
-        statusText += " (BOM)";
+        statusText += QLatin1String(" (BOM)");
 
     statusLabelCodec_.setText(statusText);
 }

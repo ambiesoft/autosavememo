@@ -10,6 +10,8 @@
 #include <QTimer>
 #include <QDebug>
 #include <QTextCodec>
+#include <QFont>
+#include <QFontDialog>
 
 #include "../../lsMisc/stdQt/settings.h"
 #include "../../lsMisc/stdQt/stdQt.h"
@@ -80,7 +82,7 @@ bool MainWindow::on_action_SaveAs_triggered()
     dialog.setAcceptMode(QFileDialog::AcceptSave);
     if (dialog.exec() != QDialog::Accepted)
         return false;
-    QString file = dialog.selectedFiles().first();
+    QString file = dialog.selectedFiles().constFirst();
     theApp->setFileDirectory(QFileInfo(file).path());
     return saveFile(file, curCodec() ? curCodec() : GetUtf8Codec());
 }
@@ -99,7 +101,7 @@ bool MainWindow::on_action_Save_triggered()
         for(int i=0 ; i < 32; ++i)
         {
             newFile = pathCombine(baseDir,
-                                  QString("autosavememo-%1.txt").arg(QTime::currentTime().msecsSinceStartOfDay()));
+                                  QStringLiteral("autosavememo-%1.txt").arg(QTime::currentTime().msecsSinceStartOfDay()));
             if(!QFile::exists(newFile) && !QDir(newFile).exists())
                 break;
         }
@@ -352,4 +354,32 @@ void MainWindow::on_action_Zoom_In_triggered()
 void MainWindow::on_actio_Zoom_out_triggered()
 {
     ui->plainTextEdit->zoomOut();
+}
+
+void MainWindow::on_action_Font_triggered()
+{
+    bool ok;
+    QFont font = QFontDialog::getFont(
+                &ok,
+                ui->plainTextEdit->font(),
+                this);
+    if (!ok)
+    {
+        if(!YesNo(this,
+                  tr("Do you want to set back to default font?")))
+        {
+            return;
+        }
+        setFont(defaultFont_);
+        theApp->setFontString(defaultFont_.toString());
+        return;
+    }
+
+    ui->plainTextEdit->setFont(font);
+    theApp->setFontString(font.toString());
+}
+
+void MainWindow::on_action_Close_triggered()
+{
+    this->close();
 }

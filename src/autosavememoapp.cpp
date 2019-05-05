@@ -31,6 +31,9 @@ bool AutosavememoApp::readSettings()
 
     setWordWrap(settings.valueBool(SECTION_WORDWRAP));
 
+    if(settings.value(SECTION_FONT).isValid())
+        fontString_ = settings.valueString(SECTION_FONT);
+
     return true;
 }
 bool AutosavememoApp::writeSettings()
@@ -41,5 +44,6 @@ bool AutosavememoApp::writeSettings()
     settings.setValue(SECTION_FILEOPENDIRECTORY, fileDirectory_);
     settings.setValue(SECTION_WORDWRAP, wordWrap());
 
+    settings.setValue(SECTION_FONT, fontString_);
     return true;
 }

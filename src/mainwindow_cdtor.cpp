@@ -26,6 +26,8 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    defaultFont_ = ui->plainTextEdit->font();
+
     QPalette palette = ui->plainTextEdit->palette();
     palette.setColor(QPalette::Highlight, QColor(Qt::GlobalColor::lightGray));
     palette.setColor(QPalette::HighlightedText, palette.text().color());
@@ -35,6 +37,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->action_New->setIcon(this->style()->standardIcon(QStyle::SP_FileIcon));
     ui->action_Open->setIcon(this->style()->standardIcon(QStyle::SP_DialogOpenButton));
     ui->action_Save->setIcon(this->style()->standardIcon(QStyle::SP_DialogSaveButton));
+    ui->action_Undo->setIcon(this->style()->standardIcon(QStyle::SP_MediaSeekBackward));
+    ui->action_Redo->setIcon(this->style()->standardIcon(QStyle::SP_MediaSeekForward));
 
     connect(ui->plainTextEdit->document(), &QTextDocument::contentsChanged,
             this, &MainWindow::documentWasModified);
@@ -66,6 +70,13 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->action_Wrap->setChecked(theApp->wordWrap());
     on_action_Wrap_toggled(theApp->wordWrap());
+
+    if(!theApp->fontString().isEmpty()) {
+        QFont f;
+        if(f.fromString(theApp->fontString()))
+            ui->plainTextEdit->setFont(f);
+    }
+
 
     setCurrentFile(QString(), QByteArray(), nullptr, false);
     setUnifiedTitleAndToolBarOnMac(true);
