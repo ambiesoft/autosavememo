@@ -93,7 +93,7 @@ win32{
 win32-g++ {
     QMAKE_CXXFLAGS += -Wno-narrowing
 }
-linux-g++ {
+linux {
     QMAKE_CXXFLAGS += -Wno-narrowing
     SOURCES += ../../lsMisc/stdQt/stdQt_linux.cpp \
 }
@@ -151,11 +151,15 @@ win32-g++ {
         LIBS += -L$$PWD/../$$MYICUDIR/icu4c/bin64/ $$MYICSMINGWLIB
     }
 }
-
+linux {
+    LIBS += -L/usr/lib/x86_64-linux-gnu -licui18n -licuuc -licudata
+}
 message($$LIBS)
-
 
 INCLUDEPATH += $$PWD/../$$MYICUDIR/icu4c/include
 DEPENDPATH += $$PWD/../$$MYICUDIR/icu4c/include
 
 message($$INCLUDEPATH)
+
+RESOURCES += \
+    resource.qrc

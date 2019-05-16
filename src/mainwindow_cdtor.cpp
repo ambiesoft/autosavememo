@@ -26,6 +26,8 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    this->setWindowIcon(QIcon(":/icon.png"));
+
     defaultFont_ = ui->plainTextEdit->font();
 
     QPalette palette = ui->plainTextEdit->palette();

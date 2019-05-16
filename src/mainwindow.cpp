@@ -6,7 +6,8 @@
 //#include <QApplication>
 #include <QFileDialog>
 #include <QSessionManager>
-//#include <QStandardPaths>
+#include <QStandardPaths>
+#include <QTime>
 #include <QTimer>
 #include <QDebug>
 #include <QTextCodec>

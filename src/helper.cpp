@@ -336,6 +336,14 @@ static void freeBytes(char *bytes)
     DELETE_ARRAY(bytes);
 }
 
+// https://stackoverflow.com/a/12336993
+#if defined(Q_OS_WIN)
+  #define ARRAYLENGTH(x) _countof(x)
+#else // !Q_OS_WIN
+  template< typename T, std::size_t N >
+  inline std::size_t ARRAYLENGTH(T(&)[N]) { return N; }
+#endif // !Q_OS_WIN
+
 void static log_err(const char*, const char* q=nullptr){Q_UNUSED(q);}
 void static log_err(const char*, int){}
 bool ccc(const QByteArray&, QTextCodec*&)
@@ -349,7 +357,7 @@ bool ccc(const QByteArray&, QTextCodec*&)
         0x0020, 0x0627, 0x0644, 0x062d, 0x0627, 0x0633, 0x0648, 0x0628,
         0x0020, 0x002b, 0x0020, 0x0627, 0x0646, 0x062a, 0x0631, 0x0646,
         0x064a, 0x062a, 0x0000};
-    int32_t beLength = 0, leLength = 0, cLength = _countof(chars);
+    int32_t beLength = 0, leLength = 0, cLength = ARRAYLENGTH(chars);
     char *beBytes = extractBytes(chars, cLength, "UTF-16BE", &beLength);
     char *leBytes = extractBytes(chars, cLength, "UTF-16LE", &leLength);
     UCharsetDetector *csd = ucsdet_open(&status);
