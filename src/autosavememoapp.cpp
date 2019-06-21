@@ -1,6 +1,7 @@
 #include <QRect>
 #include <QDesktopWidget>
 #include <QStandardPaths>
+#include <QApplication>
 
 #include "../../lsMisc/stdQt/settings.h"
 
