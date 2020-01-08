@@ -1,7 +1,9 @@
+Download and extract icu(https://github.com/unicode-org/icu)to directory "icu".
+
 # Windows
-1, Open icu\icu4c\source\allinone\allinone.sln in VisualStudio2017
+1, Open icu\icu4c\source\allinone\allinone.sln in VisualStudio2017 and build (Release|Win32)
 2, Move all files under icu\icu4c\lib to icu\icu4c\bin
-3, rename icu to icu.msvc
+3, rename directory "icu" to "icu.msvc"
 
 # MingW
 1, Open MingW32

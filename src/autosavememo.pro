@@ -116,7 +116,7 @@ linux-g++-64:QMAKE_TARGET.arch = x86_64
 win32-msvc* {
     message("MSVC")
     isEmpty(MYICSVCLIB) {
-        # 1, git submodule init -u # this retrieve sources of the ICU.
+        # 1, git submodule update -i # this retrieve sources of the ICU.
         # 2, build
         # 3, copy lib/* to bin/
         # see info/ for more
@@ -154,6 +154,12 @@ win32-g++ {
 linux {
     LIBS += -L/usr/lib/x86_64-linux-gnu -licui18n -licuuc -licudata
 }
+
+# System libs
+win32-msvc* {
+    LIBS += Shlwapi.lib
+}
+
 message($$LIBS)
 
 INCLUDEPATH += $$PWD/../$$MYICUDIR/icu4c/include

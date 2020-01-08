@@ -106,7 +106,7 @@ void MainWindow::loadFile(const QString &fileName)
         return;
     }
 
-    QByteArray allBytes ;
+    QByteArray allBytes;
     if(!getByteArrayFromFile(file, allBytes, 10 * 1024 * 1024))
         return;
 
