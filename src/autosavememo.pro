@@ -159,7 +159,9 @@ linux {
 win32-msvc* {
     LIBS += Shlwapi.lib
 }
-
+win32-g++ {
+    LIBS += -lshlwapi -lpsapi
+}
 message($$LIBS)
 
 INCLUDEPATH += $$PWD/../$$MYICUDIR/icu4c/include

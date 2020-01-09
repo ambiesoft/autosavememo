@@ -6,13 +6,17 @@
 #include <QVector>
 #include <QTextCodec>
 
-#include "../../lsMisc/stdQt/stdQt.h"
-
 #include "../compact_enc_det/compact_enc_det/compact_enc_det.h"
 #include "../compact_enc_det/compact_enc_det/compact_enc_det_hint_code.h"
 
-#include "consts.h"
+#include "unicode/utypes.h"
+#include "unicode/ucsdet.h"
+#include "unicode/ucnv.h"
+#include "unicode/ustring.h"
 
+#include "../../lsMisc/stdQt/stdQt.h"
+
+#include "consts.h"
 #include "helper.h"
 
 
@@ -289,11 +293,7 @@ bool GetDetectedCodecGoogle(const QByteArray& array, QTextCodec*& codec)
     return true;
 }
 
-#include "unicode/utypes.h"
 
-#include "unicode/ucsdet.h"
-#include "unicode/ucnv.h"
-#include "unicode/ustring.h"
 
 #define NEW_ARRAY(type,count) (type *) malloc((count) * sizeof(type))
 #define DELETE_ARRAY(array) free(array)
