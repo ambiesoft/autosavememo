@@ -52,6 +52,7 @@ private:
 protected:
     void closeEvent(QCloseEvent *event) override;
     bool event(QEvent *event) override;
+    void showEvent( QShowEvent* event ) override;
 
 private slots:
     void documentWasModified();
@@ -92,6 +93,10 @@ private slots:
     void on_action_Font_triggered();
 
     void on_action_Close_triggered();
+
+
+
+    void on_action_StartwithAutoSave_triggered(bool checked);
 
 private:
     bool saveFile(const QString &fileName,

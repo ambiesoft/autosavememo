@@ -12,7 +12,7 @@
 #include <QTextCodec>
 #include <QIODevice>
 
-#include "../../lsMisc/stdQt/settings.h"
+#include "../../lsMisc/stdQt/inisettings.h"
 #include "../../lsMisc/stdQt/stdQt.h"
 
 #include "helper.h"

@@ -14,7 +14,7 @@
 #include <QFont>
 #include <QFontDialog>
 
-#include "../../lsMisc/stdQt/settings.h"
+#include "../../lsMisc/stdQt/inisettings.h"
 #include "../../lsMisc/stdQt/stdQt.h"
 
 #include "autosavememoapp.h"
@@ -383,4 +383,10 @@ void MainWindow::on_action_Font_triggered()
 void MainWindow::on_action_Close_triggered()
 {
     this->close();
+}
+
+
+void MainWindow::on_action_StartwithAutoSave_triggered(bool checked)
+{
+    theApp->setStartWithAutoSave(checked);
 }

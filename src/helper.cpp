@@ -278,7 +278,9 @@ bool GetDetectedCodecGoogle(const QByteArray& array, QTextCodec*& codec)
                 true,  // Include 7-bit encodings
                 &bytes_consumed, &is_reliable);
     if(!is_reliable)
+    {
         return false;
+    }
 
 	switch (enc)
 	{
@@ -286,6 +288,8 @@ bool GetDetectedCodecGoogle(const QByteArray& array, QTextCodec*& codec)
 	case Encoding::UTF8:
         codec = GetUtf8Codec();
 		return true;
+    default:
+        break;
 	}
     codec = QTextCodec::codecForName(MyEncodingName2(enc));
     if(!codec)

@@ -10,6 +10,8 @@ class AutosavememoApp : public QApplication
     QByteArray geometry_;
     QString fileDirectory_;
     QString fontString_;
+    bool startWithAutoSave_;
+
 public:
     AutosavememoApp(int &argc, char **argv);
     virtual ~AutosavememoApp();
@@ -22,6 +24,13 @@ public:
     }
     void setWordWrap(bool b) {
         wordWrap_ = b;
+    }
+
+    bool startWithAutoSave() const {
+        return startWithAutoSave_;
+    }
+    void setStartWithAutoSave(bool b) {
+        startWithAutoSave_ = b;
     }
 
     QByteArray geometry() const {

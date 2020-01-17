@@ -79,9 +79,31 @@ MainWindow::MainWindow(QWidget *parent) :
             ui->plainTextEdit->setFont(f);
     }
 
+    ui->action_StartwithAutoSave->setChecked(theApp->startWithAutoSave());
 
     setCurrentFile(QString(), QByteArray(), nullptr, false);
+
+
     setUnifiedTitleAndToolBarOnMac(true);
+}
+
+void MainWindow::showEvent( QShowEvent* event )
+{
+    QMainWindow::showEvent( event );
+
+    static bool once = [&]
+    {
+        if(ui->action_StartwithAutoSave->isChecked())
+        {
+            if (curFile_.isEmpty())
+            {
+                on_action_Save_triggered();
+            }
+            setSavedOnce(true);
+        }
+        return true;
+    }();
+    Q_UNUSED(once)
 }
 
 MainWindow::~MainWindow()

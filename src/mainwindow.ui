@@ -45,7 +45,7 @@
      <x>0</x>
      <y>0</y>
      <width>708</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -105,6 +105,7 @@
      <string>&amp;Option</string>
     </property>
     <addaction name="action_Font"/>
+    <addaction name="action_StartwithAutoSave"/>
    </widget>
    <addaction name="menu_File"/>
    <addaction name="menu_View"/>
@@ -281,6 +282,14 @@
   <action name="action_Close">
    <property name="text">
     <string>&amp;Close</string>
+   </property>
+  </action>
+  <action name="action_StartwithAutoSave">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Start with AutoSave</string>
    </property>
   </action>
  </widget>

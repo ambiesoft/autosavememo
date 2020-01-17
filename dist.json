@@ -22,7 +22,6 @@
         "FolderConfig-License.txt",
         "FolderConfig-ReadMe.txt",
         "FolderConfig.exe",
-        "FolderConfig.exe.config",
         "FolderConfig.ini.sample",
         "FolderConfig.pdb",
         "History.txt",
@@ -42,9 +41,9 @@
         "FolderConfig.ini",
         "ja-JP\\Ambiesoft.FolderConfig.resources.dll",
         "platforms\\qwindows.dll",
-		"icuuc64.dll",
-		"icuin64.dll",
-		"icudt64.dll"
+		"icuuc66.dll",
+		"icuin66.dll",
+		"icudt66.dll"
     ],
 
 

@@ -1,10 +1,15 @@
-@echo off
+@echo on
 setlocal EnableDelayedExpansion
 if not exist %~dp0prepare.bat (
   echo prepare.bat not exist. Copy prepare.bat.sample and edit it.
   goto :error
 )
 call %~dp0prepare.bat
+
+if "%MYICUDIRNAME%"=="" (
+    echo MYICUDIRNAME is not set
+    goto :error
+)
 
 mkdir %DISTDIR%
 if not exist %DISTDIR%\ (
@@ -47,21 +52,21 @@ IF %ERRORLEVEL% NEQ 0 (
   goto :error
 )
 
-copy /y "%~dp0%MYICUDIRNAME%\icu4c\bin\icuin64.dll" "%DISTDIR%\"
+copy /y "%~dp0%MYICUDIRNAME%\icu4c\bin\icuin66.dll" "%DISTDIR%\"
 IF %ERRORLEVEL% NEQ 0 (
-  ECHO Failed copy: icuin64.dll
+  ECHO Failed copy: icuin66.dll
   goto :error
 )
 
-copy /y "%~dp0%MYICUDIRNAME%\icu4c\bin\icuuc64.dll" "%DISTDIR%\"
+copy /y "%~dp0%MYICUDIRNAME%\icu4c\bin\icuuc66.dll" "%DISTDIR%\"
 IF %ERRORLEVEL% NEQ 0 (
-  ECHO Failed copy: icuuc64.dll
+  ECHO Failed copy: icuuc66.dll
   goto :error
 )
 
-copy /y "%~dp0%MYICUDIRNAME%\icu4c\bin\icudt64.dll" "%DISTDIR%\"
+copy /y "%~dp0%MYICUDIRNAME%\icu4c\bin\icudt66.dll" "%DISTDIR%\"
 IF %ERRORLEVEL% NEQ 0 (
-  ECHO Failed copy: icudt64.dll
+  ECHO Failed copy: icudt66.dll
   goto :error
 )
 

@@ -1,8 +1,9 @@
 set PYTHONEXE=C:\local\python3\python.exe
-set QTROOT=C:\local\Qt
-set QTVERSION=5.11.1
-set QTVERSIONTOOLS=mingw53_32
-set QTMINGBIN=mingw530_32
+set QTROOT=Y:\G\Qt
+set QTVERSION=5.12.4
+set QTVERSIONTOOLS=mingw73_32
+set QTMINGBIN=mingw730_32
+set MYICUDIRNAME=icu.mingw730_32
 
 :: For Visual Studio 2017 x64
 ::call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat"
@@ -16,7 +17,7 @@ set MAKE=mingw32-make.exe
 
 
 set SOURCEDIR=src
-set PRONAME=SceneExplorer
+set PRONAME=autosavememo
 set DISTDIR=C:\Linkout\autosavememo
 
 

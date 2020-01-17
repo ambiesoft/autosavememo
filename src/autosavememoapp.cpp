@@ -3,7 +3,7 @@
 #include <QStandardPaths>
 #include <QApplication>
 
-#include "../../lsMisc/stdQt/settings.h"
+#include "../../lsMisc/stdQt/inisettings.h"
 
 #include "consts.h"
 #include "autosavememoapp.h"
@@ -35,6 +35,8 @@ bool AutosavememoApp::readSettings()
     if(settings.value(SECTION_FONT).isValid())
         fontString_ = settings.valueString(SECTION_FONT);
 
+    setStartWithAutoSave(settings.valueBool(SECTION_STARTWITHAUTOSAVE));
+
     return true;
 }
 bool AutosavememoApp::writeSettings()
@@ -46,5 +48,7 @@ bool AutosavememoApp::writeSettings()
     settings.setValue(SECTION_WORDWRAP, wordWrap());
 
     settings.setValue(SECTION_FONT, fontString_);
+
+    settings.setValue(SECTION_STARTWITHAUTOSAVE, startWithAutoSave());
     return true;
 }

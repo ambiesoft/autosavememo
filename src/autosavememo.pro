@@ -52,7 +52,7 @@ win32-g++ {
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-    ../../lsMisc/stdQt/settings.cpp \
+    ../../lsMisc/stdQt/inisettings.cpp \
     ../../lsMisc/stdQt/stdQt.cpp \
     mainwindow_my.cpp \
     mainwindow_cdtor.cpp \
@@ -67,7 +67,7 @@ SOURCES += \
 HEADERS += \
         mainwindow.h \
     consts.h \
-    ../../lsMisc/stdQt/settings.h \
+    ../../lsMisc/stdQt/inisettings.h \
     ../../lsMisc/stdQt/stdQt.h \
     stable.h \
     ../compact_enc_det/compact_enc_det/compact_enc_det.h \
