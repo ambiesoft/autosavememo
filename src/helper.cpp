@@ -313,7 +313,7 @@ static int32_t preflight(const UChar *src, int32_t length, UConverter *cnv)
     do {
         dest = buffer;
         status = U_ZERO_ERROR;
-        ucnv_fromUnicode(cnv, &dest, destLimit, &src, srcLimit, 0, TRUE, &status);
+        ucnv_fromUnicode(cnv, &dest, destLimit, &src, srcLimit, 0, true, &status);
         result += (int32_t) (dest - buffer);
     } while (status == U_BUFFER_OVERFLOW_ERROR);
 
@@ -328,7 +328,7 @@ static char *extractBytes(const UChar *src, int32_t length, const char *codepage
     char *bytes = NEW_ARRAY(char, byteCount + 1);
     char *dest = bytes, *destLimit = bytes + byteCount + 1;
 
-    ucnv_fromUnicode(cnv, &dest, destLimit, &src, srcLimit, 0, TRUE, &status);
+    ucnv_fromUnicode(cnv, &dest, destLimit, &src, srcLimit, 0, true, &status);
     ucnv_close(cnv);
 
     *byteLength = byteCount;

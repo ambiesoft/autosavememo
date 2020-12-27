@@ -35,7 +35,7 @@ win32 {
 # See info/icu
 win32-msvc* {
     MYICUDIR = icu.msvc
-    message(../$$MYICUDIR/icu4c/bin/libicuin.dll.a)
+    message(../$$MYICUDIR/icu4c/bin/icuin.lib)
     exists( ../$$MYICUDIR/icu4c/bin/icuin.lib ) {
         MYICSVCLIB = -licutu -licuuc -licuio -licuin -licudt
     }
