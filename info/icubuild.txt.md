@@ -10,7 +10,7 @@ Download and extract icu(https://github.com/unicode-org/icu) to directory "icu".
 1. pacman -S python
 1 export PATH=Y:/G/Qt/Tools/mingw730_32/bin:Y:/G/Qt/Tools/mingw730_32/i686-w64-mingw32:/usr/bin **OR** export PATH=/C/local/Qt/Tools/mingw730_32/bin:/usr/bin
 
-1. <strike>copy Y:\G\Qt\Tools\mingw730_32\bin\mingw32-make.exe to make.exe</strike>
+1. ~~copy Y:\G\Qt\Tools\mingw730_32\bin\mingw32-make.exe to make.exe~~
 2. cd icu/icu4c/source
 3. ./configure --prefix=$PWD/../
 4. mingw32-make -j 4
