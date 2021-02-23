@@ -9,9 +9,10 @@
 	],
 	
     "ShouldBeFiles": [
-        "Ambiesoft.AmbLibcpp.dll",
-        "Ambiesoft.AmbLibcpp.pdb",
+    	"Ambiesoft.AmbLib.dll",
+    	"Ambiesoft.AmbLib.pdb",
         "Ambiesoft.FolderConfig.dll",
+        "Ambiesoft.FolderConfig.pdb",
         "Ambiesoft.FolderConfigHelper.dll",
         "Ambiesoft.FolderConfigHelper.pdb",
         "Ambiesoft.Profile.dll",
@@ -22,12 +23,12 @@
         "FolderConfig-License.txt",
         "FolderConfig-ReadMe.txt",
         "FolderConfig.exe",
-        "FolderConfig.ini.sample",
         "FolderConfig.pdb",
+        "FolderConfig.ini.sample",
         "History.txt",
         "libEGL.dll",
         "libgcc_s_dw2-1.dll",
-        "libGLESV2.dll",
+        "libGLESv2.dll",
         "libstdc++-6.dll",
         "libwinpthread-1.dll",
         "LICENSE",
@@ -41,9 +42,9 @@
         "FolderConfig.ini",
         "ja-JP\\Ambiesoft.FolderConfig.resources.dll",
         "platforms\\qwindows.dll",
-		"icuuc66.dll",
-		"icuin66.dll",
-		"icudt66.dll"
+		"icuuc68.dll",
+		"icuin68.dll",
+		"icudt68.dll"
     ],
 
 

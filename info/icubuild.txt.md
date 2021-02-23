@@ -12,8 +12,8 @@ Download and extract icu(https://github.com/unicode-org/icu) to directory "icu".
 1. copy Y:\G\Qt\Tools\mingw730_32\bin\mingw32-make.exe to make.exe
 2. cd icu/icu4c/source
 3. ./configure --prefix=$PWD/../
-4. mingw32-make -j 4
-4. mingw32-make install
+4. make -j 4
+4. make install
 5. move lib/* to bin/
 6. rename icu to icu.mingw730_32
 

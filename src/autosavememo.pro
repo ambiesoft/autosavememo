@@ -41,7 +41,7 @@ win32-msvc* {
     }
 }
 win32-g++ {
-    MYICUDIR = icu.mingw730_32
+    MYICUDIR = icu.mingw810_32
     message(../$$MYICUDIR/icu4c/bin/libicuin.dll.a)
     exists(../$$MYICUDIR/icu4c/bin/libicuin.dll.a) {
         MYICSMINGWLIB = -llibicutu.dll -llibicuuc.dll -llibicudt.dll -llibicuin.dll -llibicuio.dll
