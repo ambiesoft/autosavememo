@@ -1,3 +1,6 @@
+2021/02/23 ver1.0.13
+Remove the file when app is cloing if it is empty
+
 2020/01/17 ver1.0.12
 Option 'Start With AutoSave'
 

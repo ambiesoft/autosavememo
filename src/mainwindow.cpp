@@ -65,10 +65,31 @@ void MainWindow::documentWasModified()
 void MainWindow::closeEvent(QCloseEvent *event)
 {
     if (maybeSave()) {
-        // writeSettings();
+        if(fileExists(curFile_) && fileEmpty(curFile_) && ui->plainTextEdit->toPlainText().isEmpty())
+        {
+            QString msg = QString(tr("'%1' is empty. Do you want to trash the file?")).arg(curFile_);
+            switch(YesNoCancel(this, msg))
+            {
+            case QMessageBox::Yes:
+                if(!QFile::moveToTrash(curFile_))
+                {
+                    Alert(this, tr("Failed to trash file."));
+                }
+                // through
+            case QMessageBox::No:
+                break;
+            default:
+                Q_ASSERT(false);
+                // through
+            case QMessageBox::Cancel:
+                event->ignore();
+                return;
+            }
+        }
         theApp->setGeometry(saveGeometry());
         event->accept();
     } else {
+        // cancel close
         event->ignore();
     }
 }
