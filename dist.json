@@ -52,8 +52,8 @@
 
     "TotalFileCount": "exact",
     "archivedir": "C:\\Linkout",
-    "remotedir": "http://ambiesoft.fam.cx/ffdav/uploads/autosavememo/",
-    "remotesha1": "http://ambiesoft.fam.cx/ffdav/uploads/getSha1.php?file=autosavememo/{}",
+    "remotedir": "http://ambiesoft.mooo.com/ffdav/uploads/autosavememo/",
+    "remotesha1": "http://ambiesoft.mooo.com/ffdav/uploads/getSha1.php?file=autosavememo/{}",
     "ShouldNotBeFiles": [
     	"folder.ini"
     ],
