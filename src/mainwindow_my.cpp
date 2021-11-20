@@ -14,6 +14,7 @@
 
 #include "../../lsMisc/stdQt/inisettings.h"
 #include "../../lsMisc/stdQt/stdQt.h"
+#include "../../lsMisc/stdQt/waitingcursor.h"
 
 #include "helper.h"
 
@@ -148,7 +149,7 @@ void MainWindow::loadFile(const QString &fileName)
     }
 
     {
-        CWaitCursor wc;
+        WaitingCursor wc;
         ui->plainTextEdit->setPlainText(readAll);
     }
 
@@ -193,7 +194,7 @@ bool MainWindow::saveFile(const QString &strFileName,
             out.setCodec(codec);
 
             {
-                CWaitCursor wc;
+                WaitingCursor wc;
                 out << ui->plainTextEdit->toPlainText();
             }
 

@@ -50,6 +50,7 @@ win32-g++ {
 
 
 SOURCES += \
+    ../../lsMisc/stdQt/waitingcursor.cpp \
         main.cpp \
         mainwindow.cpp \
     ../../lsMisc/stdQt/inisettings.cpp \
@@ -65,6 +66,7 @@ SOURCES += \
 
 
 HEADERS += \
+    ../../lsMisc/stdQt/waitingcursor.h \
         mainwindow.h \
     consts.h \
     ../../lsMisc/stdQt/inisettings.h \
