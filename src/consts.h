@@ -4,7 +4,7 @@
 namespace Consts {
     Q_CONSTEXPR char ORGANIZATION[] = "Ambiesoft";
     Q_CONSTEXPR char APPNAME[] = "autosavememo";
-    Q_CONSTEXPR char APPVER[] = "1.0.13";
+    Q_CONSTEXPR char APPVER[] = "1.0.14";
 
     Q_CONSTEXPR char SECTION_GEOMETRY[] = "geometry";
     Q_CONSTEXPR char SECTION_WORDWRAP[] = "WordWrap";

@@ -51,6 +51,7 @@ win32-g++ {
 
 SOURCES += \
     ../../lsMisc/stdQt/waitingcursor.cpp \
+    ../../lsMisc/stdosd/blockedbool.cpp \
         main.cpp \
         mainwindow.cpp \
     ../../lsMisc/stdQt/inisettings.cpp \
@@ -67,6 +68,7 @@ SOURCES += \
 
 HEADERS += \
     ../../lsMisc/stdQt/waitingcursor.h \
+    ../../lsMisc/stdosd/blockedbool.h \
         mainwindow.h \
     consts.h \
     ../../lsMisc/stdQt/inisettings.h \

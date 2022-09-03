@@ -29,6 +29,7 @@ class MainWindow : public QMainWindow
     QLabel statusAutomode_x;
     QLabel statusLabelCodec_;
 
+    bool bNoCheckClose_ = false;
     bool savedOnce_xxx = false;
     bool savedOnce() const {
         return savedOnce_xxx;
@@ -97,6 +98,8 @@ private slots:
 
 
     void on_action_StartwithAutoSave_triggered(bool checked);
+
+    void on_actionClose_Delete_the_File_triggered();
 
 private:
     bool saveFile(const QString &fileName,

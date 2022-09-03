@@ -16,6 +16,7 @@
 
 #include "../../lsMisc/stdQt/inisettings.h"
 #include "../../lsMisc/stdQt/stdQt.h"
+#include "../../lsMisc/stdosd/blockedbool.h"
 
 #include "autosavememoapp.h"
 
@@ -23,6 +24,7 @@
 #include "ui_mainwindow.h"
 
 using namespace AmbiesoftQt;
+using namespace Ambiesoft;
 
 
 void MainWindow::onDeactivated()
@@ -64,6 +66,9 @@ void MainWindow::documentWasModified()
 }
 void MainWindow::closeEvent(QCloseEvent *event)
 {
+    if(bNoCheckClose_)
+        return;
+
     if (maybeSave()) {
         if(fileExists(curFile_) && fileEmpty(curFile_) && ui->plainTextEdit->toPlainText().isEmpty())
         {
@@ -410,4 +415,25 @@ void MainWindow::on_action_Close_triggered()
 void MainWindow::on_action_StartwithAutoSave_triggered(bool checked)
 {
     theApp->setStartWithAutoSave(checked);
+}
+
+void MainWindow::on_actionClose_Delete_the_File_triggered()
+{
+    if (!curFile_.isEmpty() && fileExists(curFile_))
+    {
+        const QMessageBox::StandardButton ret
+            = QMessageBox::warning(this, tr("Application"),
+                                   tr("Are you sure you want to delete '%1'?").arg(curFile_),
+                                   QMessageBox::Yes | QMessageBox::Cancel,
+                                   QMessageBox::Cancel);
+        switch (ret) {
+        case QMessageBox::Yes:
+            break;
+        default:
+            return;
+       }
+    }
+
+    BlockedBool bb(&bNoCheckClose_);
+    this->close();
 }
