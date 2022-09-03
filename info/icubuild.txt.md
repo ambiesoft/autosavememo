@@ -1,4 +1,4 @@
-Download and extract icu(https://github.com/unicode-org/icu) to directory "icu".
+Download and extract icu( https://github.com/unicode-org/icu/tree/maint/maint-66 ) to directory "icu".
 
 # Windows
 1. Open icu\icu4c\source\allinone\allinone.sln in VisualStudio2017 and build (Release|Win32)

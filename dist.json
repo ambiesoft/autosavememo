@@ -9,8 +9,6 @@
 	],
 	
     "ShouldBeFiles": [
-    	"Ambiesoft.AmbLib.dll",
-    	"Ambiesoft.AmbLib.pdb",
         "Ambiesoft.FolderConfig.dll",
         "Ambiesoft.FolderConfig.pdb",
         "Ambiesoft.FolderConfigHelper.dll",
@@ -23,9 +21,13 @@
         "FolderConfig-License.txt",
         "FolderConfig-ReadMe.txt",
         "FolderConfig.exe",
-        "FolderConfig.pdb",
+        "FolderConfig.ini",
         "FolderConfig.ini.sample",
+        "FolderConfig.pdb",
         "History.txt",
+        "icudt66.dll",
+        "icuin66.dll",
+        "icuuc66.dll",
         "libEGL.dll",
         "libgcc_s_dw2-1.dll",
         "libGLESv2.dll",
@@ -37,23 +39,20 @@
         "Qt5Gui.dll",
         "Qt5Svg.dll",
         "Qt5Widgets.dll",
-        "README.md",
         "README.jp.md",
-        "FolderConfig.ini",
+        "README.md",
         "ja-JP\\Ambiesoft.FolderConfig.resources.dll",
-        "platforms\\qwindows.dll",
-		"icuuc68.dll",
-		"icuin68.dll",
-		"icudt68.dll"
+        "platforms\\qwindows.dll"
     ],
+
 
 
 
 
     "TotalFileCount": "exact",
     "archivedir": "C:\\Linkout",
-    "remotedir": "http://ambiesoft.mooo.com/ffdav/uploads/autosavememo/",
-    "remotesha1": "http://ambiesoft.mooo.com/ffdav/uploads/getSha1.php?file=autosavememo/{}",
+    "remotedir": "https://ambiesoft.com/ffdav/uploads/autosavememo/",
+    "remotesha1": "https://ambiesoft.com/ffdav/uploads/getSha1.php?file=autosavememo/{}",
     "ShouldNotBeFiles": [
     	"folder.ini"
     ],
